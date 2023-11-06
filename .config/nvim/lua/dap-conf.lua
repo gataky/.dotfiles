@@ -1,8 +1,8 @@
 local dap = require('dap')
 local dapui = require('dapui')
-local pbp = require('persistent-breakpoints')
-
-pbp.setup({ load_breakpoints_event = { "BufReadPost" } })
+-- local pbp = require('persistent-breakpoints')
+--
+-- pbp.setup({ load_breakpoints_event = { "BufReadPost" } })
 
 -- require('dap').set_log_level('TRACE')
 
@@ -21,7 +21,7 @@ require('dap-go').setup({
 -- Python ==============================================================================
 
 local home = os.getenv("HOME")
-local env = home .. '/.pyenv/versions/debugpy/bin/python'
+local env = home .. '/Library/Caches/pypoetry/virtualenvs/nvim-ODZP_Y0s-py3.9/bin/python'
 
 dap.adapters.python = {
     type = 'executable';
@@ -36,9 +36,9 @@ dap.configurations.python = {
         name = "Launch file";
 
         program = "${file}";
-        pythonPath = function()
-            return env
-        end;
+        -- pythonPath = function()
+        --     return env
+        -- end;
     },
 }
 
@@ -49,29 +49,27 @@ require("dap-vscode-js").setup({
     adapters = { 'pwa-node' },
 })
 
-for _, language in ipairs({ "typescript" }) do
-    dap.configurations[language] = {
-        {
-            type = "pwa-node",
-            request = "launch",
-            name = "Launch file",
-            program = "${file}",
-            cwd = "${workspaceFolder}",
-            sourceMaps = true,
-            protocol = "inspector",
-            console = "integratedTerminal",
-            outFiles = { "${workspaceFolder}/dist/**/*.js" },
-            resolveSourceMapLocations = {
-                "${workspaceFolder}/dist/**/*.js",
-                "${workspaceFolder}/**",
-                "!**/node_modules/**"
-            },
-            runtimeExecutable = "ts-node",
-            skipFiles = { "<mode_internals>/**" },
-            preLaunchTask = "tsc: build - tsconfig.json"
-        }
+dap.configurations.typescript = {
+    {
+        type = "pwa-node",
+        request = "launch",
+        name = "Launch file",
+        program = "${file}",
+        cwd = "${workspaceFolder}",
+        sourceMaps = true,
+        protocol = "inspector",
+        console = "integratedTerminal",
+        outFiles = { "${workspaceFolder}/dist/**/*.js" },
+        resolveSourceMapLocations = {
+            "${workspaceFolder}/dist/**/*.js",
+            "${workspaceFolder}/**",
+            "!**/node_modules/**"
+        },
+        runtimeExecutable = "ts-node",
+        skipFiles = { "<mode_internals>/**" },
+        preLaunchTask = "tsc: build - tsconfig.json"
     }
-end
+}
 
 -- Generic =============================================================================
 
@@ -107,9 +105,11 @@ end
 
 local opts = { noremap = true, silent = true }
 
-keymap("n", "<leader>b",  "<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>", opts)
-keymap("n", "<leader>ba", "<cmd>lua require('persistent-breakpoints.api').clear_all_breakpoints()<CR>", opts)
-keymap("n", "<leader>q",  "<cmd>lua require('dapui').close()<cr>", opts)
+-- keymap("n", "<leader>b",  "<cmd>lua require('persistent-breakpoints.api').toggle_breakpoint()<CR>", opts)
+-- keymap("n", "<leader>ba", "<cmd>lua require('persistent-breakpoints.api').clear_all_breakpoints()<CR>", opts)
+keymap("n", "<leader>b", "<cmd>lua require('dap').toggle_breakpoint()<CR>", opts)
+keymap("n", "<leader>ba", "<cmd>lua require('dap').clear_all_breakpoints()<CR>", opts)
+keymap("n", "<leader>q", "<cmd>lua require('dapui').close()<cr>", opts)
 
 vim.fn.sign_define('DapBreakpoint', { text = '', texthl = 'DapBreakpoint' })
 vim.fn.sign_define('DapStopped', { text = '', texthl = 'DapStopped' })

@@ -1,66 +1,84 @@
 call plug#begin('~/.config/nvim/plugged')
     " === helpful plugins
         " seamless navigation when using vim in tmux
-        Plug 'alexghergh/nvim-tmux-navigation'                      " lua
-        Plug 'echasnovski/mini.nvim'                                " lua
-        Plug 'mhinz/vim-startify'                                   " vim
+        Plug 'alexghergh/nvim-tmux-navigation'
+        Plug 'echasnovski/mini.nvim'
+        Plug 'mhinz/vim-startify'
+        Plug 'editorconfig/editorconfig-vim'
+        Plug 'tpope/vim-eunuch'
+        Plug 'qpkorr/vim-bufkill'
 
     " === git
-        Plug 'kdheepak/lazygit.nvim'                                " lua
+        Plug 'kdheepak/lazygit.nvim'
         Plug 'rhysd/git-messenger.vim'
-        Plug 'APZelos/blamer.nvim'
         Plug 'lewis6991/gitsigns.nvim'
 
     " === stat display
-        Plug 'nvim-lualine/lualine.nvim'                            " lua
+        Plug 'nvim-lualine/lualine.nvim'
 
     " === lsp ===
-        Plug 'neovim/nvim-lspconfig'                                " lua
+        Plug 'neovim/nvim-lspconfig'
         " manager of various lsp servers
-        Plug 'williamboman/mason-lspconfig.nvim'                    " lua
-        Plug 'williamboman/mason.nvim'                              " lua
+        Plug 'williamboman/mason-lspconfig.nvim'
+        Plug 'williamboman/mason.nvim'
 
     " === telescope
-        Plug 'nvim-lua/plenary.nvim'                                " lua
-        Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.x' }    " lua
-        Plug 'sharkdp/fd'                                           " lua
-        Plug 'nvim-tree/nvim-web-devicons'                          " lua
+        Plug 'nvim-lua/plenary.nvim'
+        Plug 'nvim-telescope/telescope.nvim'
+        Plug 'sharkdp/fd'
+        Plug 'nvim-tree/nvim-web-devicons'
         Plug 'nvim-telescope/telescope-symbols.nvim'
         Plug 'BurntSushi/ripgrep'
 
     " === autocompletion + snippets
-        Plug 'hrsh7th/nvim-cmp'                                     " lua
-        Plug 'hrsh7th/cmp-buffer'                                   " lua
-        Plug 'hrsh7th/cmp-path'                                     " lua
-        Plug 'saadparwaiz1/cmp_luasnip'                             " lua
-        Plug 'hrsh7th/cmp-nvim-lsp'                                 " lua
-        Plug 'L3MON4D3/LuaSnip'                                     " lua
-        Plug 'rafamadriz/friendly-snippets'                         " lua
+        Plug 'hrsh7th/nvim-cmp'
+        Plug 'hrsh7th/cmp-buffer'
+        Plug 'hrsh7th/cmp-path'
+        Plug 'saadparwaiz1/cmp_luasnip'
+        Plug 'hrsh7th/cmp-nvim-lsp'
+        Plug 'L3MON4D3/LuaSnip'
+        Plug 'rafamadriz/friendly-snippets'
         " bracket auto closer
-        Plug 'rstacruz/vim-closer'                                  " vim
+        Plug 'rstacruz/vim-closer'
 
     " === debugging
-        Plug 'mfussenegger/nvim-dap'                                " lua
-        Plug 'rcarriga/nvim-dap-ui'                                 " lua
-        Plug 'mxsdev/nvim-dap-vscode-js'                            " lua
-        Plug 'Weissle/persistent-breakpoints.nvim'                  " lua
+        Plug 'mfussenegger/nvim-dap'
+        Plug 'rcarriga/nvim-dap-ui'
+        Plug 'mxsdev/nvim-dap-vscode-js'
+        " Plug 'Weissle/persistent-breakpoints.nvim'
         Plug 'sir-wiggles/nvim-dap-go'
 
     " === themes & colors
         " color codes to actual colors in vim
-        Plug 'norcalli/nvim-colorizer.lua'                          " lua
-        Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " lua
+        Plug 'norcalli/nvim-colorizer.lua'
+        Plug 'nvim-treesitter/nvim-treesitter'
+        Plug 'folke/lsp-colors.nvim'
         " highlight
         Plug 'EdenEast/nightfox.nvim'
-        Plug 'jacoborus/tender.vim'
-        Plug 'savq/melange'
         Plug 'bluz71/vim-nightfly-colors'
-        Plug 'folke/lsp-colors.nvim'
         Plug 'ellisonleao/gruvbox.nvim'
 
     " === xplugs
         Plug 'nvim-tree/nvim-tree.lua'
         Plug 'famiu/bufdelete.nvim'
+
+        Plug 'averms/black-nvim', {'do': ':UpdateRemotePlugins'}
+        Plug 'stsewd/isort.nvim', {'do': ':UpdateRemotePlugins'}
+
+        Plug 'godlygeek/tabular'
+
+        Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+        Plug 'direnv/direnv.vim'
+
+        Plug 'antoinemadec/FixCursorHold.nvim'
+        Plug 'nvim-neotest/neotest'
+        Plug 'nvim-neotest/neotest-python'
+        Plug 'nvim-neotest/neotest-go'
+        Plug 'nvim-neotest/neotest-jest'
+        Plug 'rcasia/neotest-java'
+
+
+        Plug 'mfussenegger/nvim-jdtls'
 
 call plug#end()
 
@@ -70,12 +88,10 @@ let mapleader = ','
 
 lua require('init')
 
-" theme
-let base16colorspace=256
-colorscheme gruvbox
+colorscheme catppuccin-mocha
+highlight Normal guibg=none
 
 " options
-" set clipboard+=unnamedplus
 set cmdheight=1
 set colorcolumn=90
 set cursorline
@@ -98,25 +114,23 @@ set wildmenu
 set wildmode=longest:full,full
 
 " tmux
-nnoremap <silent> <C-h>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLeft()<cr>
-nnoremap <silent> <C-j>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateDown()<cr>
-nnoremap <silent> <C-k>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateUp()<cr>
-nnoremap <silent> <C-l>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateRight()<cr>
-nnoremap <silent> <C-\>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLastActive()<cr>
-nnoremap <silent> <C-Space> :lua require('nvim-tmux-navigation').NvimTmuxNavigateNext()<cr>
+nnoremap <silent> <c-h>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLeft()<cr>
+nnoremap <silent> <c-j>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateDown()<cr>
+nnoremap <silent> <c-k>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateUp()<cr>
+nnoremap <silent> <c-l>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateRight()<cr>
+nnoremap <silent> <c-\>     :lua require('nvim-tmux-navigation').NvimTmuxNavigateLastActive()<cr>
+nnoremap <silent> <c-space> :lua require('nvim-tmux-navigation').NvimTmuxNavigateNext()<cr>
 
 " tab
 nnoremap <leader><c-h> :tabprevious<cr>
 nnoremap <leader><c-l> :tabnext<cr>
+nnoremap <c-[> gT
+nnoremap <c-]> gt
 
 " buffer
 nnoremap <s-l> :bn<cr>
 nnoremap <s-h> :bp<cr>
-nnoremap <c-c> :bw<cr>
-
-" tabs
-nnoremap <c-[> gT
-nnoremap <c-]> gt
+nnoremap <c-c> :BW<cr>
 
 " copy + paste
 vnoremap <leader>y  "+y
@@ -131,18 +145,16 @@ nnoremap <leader>P  "+P
 
 " variables
 let g:startify_fortune_use_unicode=1
-let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
-let g:blamer_enabled = 1
-
-let g:poetv_executables = ['poetry']
-let g:poetv_statusline_symbol = ''
-let g:poetv_auto_activate = 0
+let g:python3_host_prog='~/Library/Caches/pypoetry/virtualenvs/nvim-ODZP_Y0s-py3.9/bin/python'
 
 " editor
 inoremap jk <esc>
 inoremap JK <esc>
 nnoremap <leader>h :setlocal spell! spelllang=en_us<cr>
 nnoremap <leader>w :nohlsearch<cr>
+
+nnoremap <leader>e  :edit   <c-r>=expand("%:p:h") . "/" <cr>
+nnoremap <leader>es :vsplit <c-r>=expand("%:p:h") . "/" <cr>
 
 " resize buffers
 nnoremap <s-left>  :vertical resize -5<cr>
@@ -153,24 +165,23 @@ nnoremap <s-up>    :resize          -5<cr>
 " telescope
 vnoremap <leader>fg "zy:Telescope live_grep default_text=<c-r>z<cr>
 nnoremap <c-p> :Telescope fd<cr>
-nnoremap <leader>ff :execute 'Telescope find_files default_text=' . "'" . expand('<cword>')<cr>
-nnoremap <leader>fg :execute 'Telescope live_grep default_text=' . expand('<cword>')<cr>
+nnoremap <leader>ff :execute 'Telescope find_files hidden=true default_text=' . expand('<cword>')<cr>
+nnoremap <leader>fg :execute 'Telescope live_grep  hidden=true default_text=' . expand('<cword>')<cr>
 
 nnoremap <leader>fb :NvimTreeToggle<cr>
 nnoremap <c-b> :Bdelete<cr>
 
 " commands
-command! Git   :LazyGit
-command! Grep  :Telescope live_grep
-command! Debug lua require("dap").continue(); require("dapui").open()
-command! Vimrc :e ~/.config/nvim/init.vim
-command! Luarc :e ~/.config/nvim/lua/init.lua
-command! Cmprc :e ~/.config/nvim/lua/cmp-conf.lua
-command! Daprc :e ~/.config/nvim/lua/dap-conf.lua
-command! Lsprc :e ~/.config/nvim/lua/lsp-conf.lua
+command! Magit  :LazyGit
+command! Grep   :Telescope live_grep
+command! Debug  lua require("dap").continue(); require("dapui").open()
+command! Vimrc  :e ~/.config/nvim/init.vim
+command! Luarc  :e ~/.config/nvim/lua/init.lua
+command! Cmprc  :e ~/.config/nvim/lua/cmp-conf.lua
+command! Daprc  :e ~/.config/nvim/lua/dap-conf.lua
+command! Lsprc  :e ~/.config/nvim/lua/lsp-conf.lua
 command! Source :source ~/.config/nvim/init.vim
-command! Venv  :PoetvActivate | LspRestart
-command! Fb    :NvimTreeToggle
+command! Tree   :NvimTreeToggle
 
 " autocmds
 " highlight the yanked text for a short period of time
@@ -186,7 +197,17 @@ augroup daprepl
 augroup end
 
 " highlight
-highlight DapStopped    guifg=#afaf00 guibg=#3a3a3a
-highlight DapBreakpoint guifg=#9b0006 guibg=#3a3a3a
+highlight DapStopped    guifg=#24f504 guibg=default
+highlight DapBreakpoint guifg=#ff3636 guibg=default
 highlight FloatBorder  ctermfg=NONE ctermbg=NONE cterm=NONE
 
+
+command! Lsp  :PoetvActivate | :LspRestart
+" command! Black :!poetry run isort . && poetry run black .
+
+let g:black#settings = {
+    \ 'fast': 1,
+    \ 'line_length': 120
+\}
+
+command! Black call Black()<cr>
