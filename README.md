@@ -13,5 +13,5 @@ git clone git@github.com:gataky/.dotfiles.git ~/.dotfiles
 2. Create links 
 
 ```
-find . -type d -depth 1 -not -path '*/.*' | sed -r 's|./(.*)|\1|' | xargs -I{} stow -d ~/.dotfiles -R {}
+find ~/.dotfiles/ -type d -depth 1 | awk -F '/' '{print $NF}' | grep -v '.git' | xargs -I{} stow -d ~/.dotfiles -R {}
 ```
