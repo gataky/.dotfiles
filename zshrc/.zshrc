@@ -133,7 +133,7 @@ export SHELL=/bin/zsh
 export VISUAL=nvim
 
 export FZF_BASE=/usr/local/bin/fzf
-export FZF_DEFAULT_COMMAND='rg --files --follow -g "!{node_modules/*,.git/*}"'
+export FZF_DEFAULT_COMMAND='rg -. --files --follow -g "!{node_modules/*,.git/*}"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 eval "$(zoxide init --cmd cd zsh)"
