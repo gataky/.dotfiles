@@ -15,6 +15,9 @@ vim.keymap.set("n", "<c-s-K>", "<c-w>K", opts)
 vim.keymap.set("n", "<c-s-L>", "<c-w>L", opts)
 vim.keymap.set("n", "<c-s-R>", "<c-w>R", opts)
 
+-- vim.keymap.del("n", "<leader>gg")
+-- vim.keymap.del("n", "<leader>gG")
+
 -- stylua: ignore start
 vim.keymap.set({ 'n', 'x' }, '<leader>y', '"+y', { desc = 'Copy from system clipboard' })
 vim.keymap.set({ 'n', 'x' }, '<leader>Y', '"+yg_', { desc = 'Copy from system clipboard' })

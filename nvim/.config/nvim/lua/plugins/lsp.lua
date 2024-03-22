@@ -6,6 +6,16 @@ function cap()
     return capabilities
 end
 
+local lspconfig = require("lspconfig")
+require("lspconfig.configs").gataky = {
+    default_config = {
+        cmd = { "/Users/jeffor/Projects/lsp/main" },
+        filetypes = { "markdown" },
+        name = "gataky",
+        root_dir = lspconfig.util.root_pattern("go.mod"),
+    },
+}
+
 return {
     {
         "neovim/nvim-lspconfig",
@@ -15,6 +25,7 @@ return {
                 virtual_text = false,
             },
             servers = {
+                gataky = {},
                 lua_ls = {
                     settings = {
                         Lua = {
