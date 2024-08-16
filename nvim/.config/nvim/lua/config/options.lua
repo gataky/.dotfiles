@@ -21,3 +21,6 @@ vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 4
 
 vim.g.fugitive_gitlab_domains = { "https://gitlab.zgtools.net" }
+
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true

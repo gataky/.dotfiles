@@ -1,20 +1,12 @@
-function cap()
-    capabilities = require("cmp_nvim_lsp").default_capabilities(
+-- Must be ran before lspconfg
+
+local function cap()
+    local capabilities = require("cmp_nvim_lsp").default_capabilities(
         vim.lsp.protocol.make_client_capabilities()
     )
     capabilities.textDocument.completion.completionItem.snippetSupport = false
     return capabilities
 end
-
-local lspconfig = require("lspconfig")
-require("lspconfig.configs").gataky = {
-    default_config = {
-        cmd = { "/Users/jeffor/Projects/lsp/main" },
-        filetypes = { "markdown" },
-        name = "gataky",
-        root_dir = lspconfig.util.root_pattern("go.mod"),
-    },
-}
 
 return {
     {
@@ -25,7 +17,6 @@ return {
                 virtual_text = false,
             },
             servers = {
-                gataky = {},
                 lua_ls = {
                     settings = {
                         Lua = {

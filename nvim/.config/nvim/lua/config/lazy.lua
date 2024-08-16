@@ -8,7 +8,11 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 require("lazy").setup({
     spec = {
-        { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+        {
+            "catppuccin/nvim",
+            name = "catppuccin",
+            priority = 1000,
+        },
         {
             "rebelot/kanagawa.nvim",
             name = "kanagawa",
@@ -31,11 +35,11 @@ require("lazy").setup({
                 overrides = function(colors) -- add/modify highlights
                     return {}
                 end,
-                theme = "wave", -- Load "wave" theme when 'background' option is not set
-                background = { -- map the value of 'background' option to a theme
-                    dark = "wave", -- try "dragon" !
-                    light = "lotus",
-                },
+                theme = "dragon", -- Load "wave" theme when 'background' option is not set
+                -- background = { -- map the value of 'background' option to a theme
+                --     dark = "dragon", -- try "dragon" !
+                --     light = "lotus",
+                -- },
             },
         },
         {
@@ -77,7 +81,7 @@ require("lazy").setup({
             "LazyVim/LazyVim",
             import = "lazyvim.plugins",
             opts = {
-                colorscheme = "catppuccin",
+                colorscheme = "kanagawa",
             },
         },
 
@@ -107,7 +111,9 @@ require("lazy").setup({
         version = false, -- always use the latest git commit
         -- version = "*", -- try installing the latest stable version for plugins that support semver
     },
-    install = { colorscheme = { "catppuccin", "tokyonight", "habamax" } },
+    install = {
+        colorscheme = { "catppuccin", "tokyonight", "habamax", "gruvbox" },
+    },
     checker = { enabled = false }, -- automatically check for plugin updates
     performance = {
         rtp = {

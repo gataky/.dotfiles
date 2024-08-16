@@ -136,6 +136,8 @@ export FZF_BASE=/usr/local/bin/fzf
 export FZF_DEFAULT_COMMAND='rg -. --files --follow -g "!{node_modules/*,.git/*}"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+export GITLAB_API_TOKEN=vYDQ5WtohbimU2miy8CX
+
 eval "$(zoxide init --cmd cd zsh)"
 
 # =================================================

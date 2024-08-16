@@ -1,6 +1,6 @@
 license = 'apache'
 
 [default]
+bin = '/opt/cisco/secureclient/bin/vpn'
 region = 'Seattle (West Coast)'
 username = 'jeffor'
-bin = '/opt/cisco/secureclient/bin/vpn'
