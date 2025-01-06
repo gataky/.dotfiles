@@ -46,3 +46,4 @@ return {
 			-- { '<leader>sG', function() live_grep_git_root() end,                       desc = '[S]earch by [G]rep on Git Root' },
 		},
 }
+

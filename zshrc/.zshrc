@@ -133,7 +133,7 @@ export SHELL=/bin/zsh
 export VISUAL=nvim
 
 export FZF_BASE=/usr/local/bin/fzf
-export FZF_DEFAULT_COMMAND='rg -. --files --follow -g "!{node_modules/*,.git/*}"'
+export FZF_DEFAULT_COMMAND='rg -. --files --follow -g "!{node_modules/*,.git/*,.direnv/*}"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export GITLAB_API_TOKEN=vYDQ5WtohbimU2miy8CX
@@ -174,7 +174,7 @@ autoload -U +X bashcompinit && bashcompinit
 # =================================================
 
 alias z3d='export env=z3d; python3 ~/scripts/change_env.py'
-alias sso='aws --profile zillow-dev sso login'
+alias sso='aws --profile conv-ai sso login'
 alias ssos='aws --profile zillow-qa sso login'
 alias ssop='aws --profile zillow-prod sso login'
 
@@ -198,3 +198,21 @@ json-beautify-inplace () {
 # alias sc="jq '.photos | keys.[]' showcase_*.json | sort > sc"
 # alias gp="jq '.rankings_by_floor.[].photo_rankings_by_pin.[].[].image_id' gbr*.json | sort > gp"
 # alias ap="jq '.[].photos.[].photoKey' photos_*.json | sort > pa"
+
+
+# Fucking java 
+
+export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home"
+export PATH="${JAVA_HOME}/bin:${PATH}"
+
+export M2_HOME="/Users/jeffor/.maven"
+export PATH="${M2_HOME}/bin:${PATH}"
+
+
+# export PATH="/opt/homebrew/Cellar/go/1.23.2/bin:/Users/jeffor/go/bin":$PATH
+
+# GoLang
+# export GOROOT=/Users/jeffor/.go
+# export PATH=$GOROOT/bin:$PATH
+# export GOPATH=/Users/jeffor/go
+# export PATH=$GOPATH/bin:$PATH

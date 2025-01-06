@@ -1,6 +1,6 @@
 return {
     "gataky/navi.nvim",
-    dir = "~/Documents/nvim/navi.nvim",
+    dir = "~/Documents/navi.nvim",
     dev = false,
     opts = {},
     -- config = function(opts)
