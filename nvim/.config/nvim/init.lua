@@ -66,6 +66,15 @@ add({
 -- colors
 add({ source = 'sainnhe/gruvbox-material' })
 
+-- File explorer
+add({
+    source = 'nvim-neo-tree/neo-tree.nvim',
+    depends = {
+        'MunifTanjim/nui.nvim',
+        'nvim-tree/nvim-web-devicons'
+    },
+})
+
 -- ================================================================================================
 local now = deps.now
 
@@ -303,6 +312,7 @@ now(function()
     })
 
     lspconfig.basedpyright.setup {}
+
     lspconfig.lua_ls.setup({
         on_init = function(client)
             client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
@@ -321,6 +331,15 @@ now(function()
             Lua = {}
         }
     })
+
+    lspconfig.ts_ls.setup {
+        filetypes = {
+            "javascript",
+            "typescript",
+            "vue",
+        },
+    }
+
     vim.api.nvim_set_keymap('i', '<Tab>', [[pumvisible() ? "\<C-n>" : "\<Tab>"]], {
         noremap = true, expr = true
     })
@@ -379,7 +398,7 @@ end)
 local later = deps.later
 
 later(function() require('mini.align').setup() end)
-later(function() require('mini.animate').setup() end)
+-- later(function() require('mini.animate').setup() end)
 later(function() require('mini.bracketed').setup() end)
 later(function() require('mini.comment').setup() end)
 later(function() require('mini.cursorword').setup() end)
@@ -451,8 +470,26 @@ later(function()
     local telescope = require('telescope')
     telescope.setup()
 
+    -- function to look for git_files first then fall back to find_files
+    local project_files = function()
+        local opts = {}
+
+        local cwd = vim.fn.getcwd()
+        local is_inside_work_tree = {}
+        if is_inside_work_tree[cwd] == nil then
+            vim.fn.system("git rev-parse --is-inside-work-tree")
+            is_inside_work_tree[cwd] = vim.v.shell_error == 0
+        end
+
+        if is_inside_work_tree then
+            require("telescope.builtin").git_files(opts)
+        else
+            require("telescope.builtin").find_files(opts)
+        end
+    end
+
     vim.api.nvim_set_keymap('n', "<C-p>", '', {
-        callback = function() require('telescope.builtin').find_files({ hidden = true }) end,
+        callback = function() project_files({ hidden = true }) end,
         noremap = true,
     })
     vim.api.nvim_set_keymap('n', '<leader>sw', '', {
@@ -469,6 +506,25 @@ later(function()
     })
 end)
 
+--                                                                                         neo-tree
+later(function()
+    require("neo-tree").setup({
+        filesystem = {
+            filtered_items = {
+                visible = true,
+                show_hidden_count = true,
+                hide_dotfiles = false,
+                hide_gitignored = false,
+            },
+            follow_current_file = {
+                enabled = true,
+                leave_dirs_open = false,
+            },
+        },
+        buffers = { follow_current_file = { enable = true } },
+    })
+    vim.api.nvim_set_keymap('n', '<leader>e', '<cmd>Neotree toggle<cr>', { noremap = true })
+end)
 
 vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
     group = vim.api.nvim_create_augroup("Color", {}),
