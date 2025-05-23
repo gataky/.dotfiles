@@ -210,13 +210,117 @@ now(function()
             'tmux',
             'typescript',
             'vimdoc',
+            'javascript',
         },
         highlight = { enable = true },
     })
 end)
 
+-- ================================================================================================
+local later = deps.later
+
+later(function() require('mini.align').setup() end)
+-- later(function() require('mini.animate').setup() end)
+later(function() require('mini.bracketed').setup() end)
+later(function() require('mini.comment').setup() end)
+later(function() require('mini.cursorword').setup() end)
+later(function() require('mini.fuzzy').setup() end)
+later(function() require('mini.indentscope').setup() end)
+later(function() require('mini.jump').setup() end)
+later(function() require('mini.jump2d').setup() end)
+later(function() require('mini.pairs').setup() end)
+later(function() require('mini.surround').setup() end)
+--                                                                                   mini.bufremove
+later(function()
+    require('mini.bufremove').setup()
+
+    vim.api.nvim_set_keymap('n', '<c-c>', '', {
+        callback = function()
+            require('mini.bufremove').wipeout()
+        end
+    })
+end)
+--                                                                                  mini.trailspace
+later(function()
+    require('mini.trailspace').setup()
+    vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = "*",
+        callback = function()
+            local trailspace = require('mini.trailspace')
+            trailspace.trim()
+            trailspace.trim_last_lines()
+        end,
+    })
+end)
+--                                                                                            mason
+later(function()
+    require('mason').setup({
+        ui = {
+            border = border,
+            icons = {
+                package_installed = "✓",
+                package_pending = "➜",
+                package_uninstalled = "✗"
+            }
+        }
+    })
+    require("mason-lspconfig").setup()
+end)
+--                                                                             nvim-tmux-navigation
+later(function()
+    require('nvim-tmux-navigation').setup({})
+    vim.api.nvim_set_keymap('n', "<C-h>", "<cmd>NvimTmuxNavigateLeft<cr>", { noremap = true })
+    vim.api.nvim_set_keymap('n', "<C-j>", "<cmd>NvimTmuxNavigateDown<cr>", { noremap = true })
+    vim.api.nvim_set_keymap('n', "<C-k>", "<cmd>NvimTmuxNavigateUp<cr>", { noremap = true })
+    vim.api.nvim_set_keymap('n', "<C-l>", "<cmd>NvimTmuxNavigateRight<cr>", { noremap = true })
+end)
+--                                                                                           neogit
+later(function()
+    local neogit = require('neogit')
+    neogit.setup({
+        signs = {
+            -- { closed, opened }
+            hunk = { "", "" },
+            item = { "▷", "▽" },
+            section = { "▷", "▽" },
+        },
+    })
+    vim.api.nvim_set_keymap('n', '<leader>gg', '<cmd>Neogit<cr>', { noremap = true })
+end)
+--                                                                                        telescope
+later(function()
+    local telescope = require('telescope')
+    telescope.setup()
+
+    vim.api.nvim_set_keymap('n', "<C-p>", '', {
+        callback = function() require('telescope.builtin').find_files({ hidden = true }) end,
+        noremap = true,
+    })
+    vim.api.nvim_set_keymap('n', '<leader>sw', '', {
+        callback = function() require('telescope.builtin').grep_string() end,
+        noremap = true,
+    })
+    vim.api.nvim_set_keymap('n', '<leader>sg', '', {
+        callback = function() require('telescope.builtin').live_grep() end,
+        noremap = true,
+    })
+    vim.api.nvim_set_keymap('n', '<leader>gf', '', {
+        callback = function() require('telescope.builtin').git_files() end,
+        noremap = true,
+    })
+end)
+
+later(function() require('render-markdown').setup({}) end)
+
+later(function()
+    require("nvim-tree").setup()
+    require('nvim-web-devicons').setup()
+
+    vim.api.nvim_set_keymap('n', '<leader>e', ':NvimTreeToggle<cr>', { noremap = true, expr = false })
+end)
+
 --                                                                                        lspconfig
-now(function()
+later(function()
     local lspconfig = require('lspconfig')
     vim.diagnostic.config({
         virtual_text = false,
@@ -313,6 +417,26 @@ now(function()
 
     lspconfig.basedpyright.setup {}
 
+    local mason_registry = require('mason-registry')
+    local vue_language_server_path = mason_registry.get_package('vue-language-server'):get_install_path() ..
+        '/node_modules/@vue/language-server'
+
+    lspconfig.ts_ls.setup {
+        init_options = {
+            plugins = {
+                {
+                    name = '@vue/typescript-plugin',
+                    location = vue_language_server_path,
+                    languages = { 'vue' },
+                },
+            },
+        },
+        filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+    }
+
+    -- No need to set `hybridMode` to `true` as it's the default value
+    lspconfig.volar.setup {}
+
     lspconfig.lua_ls.setup({
         on_init = function(client)
             client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
@@ -378,7 +502,7 @@ now(function()
             vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
             vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
             vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-            vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+            vim.keymap.set("n", "H", vim.lsp.buf.signature_help, opts)
             vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
             vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
             vim.keymap.set("n", "<leader>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
