@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Dotfiles Installation Script
 # This script installs all dependencies needed for the dotfiles configuration
 
@@ -53,7 +52,7 @@ install_homebrew() {
         if ! command_exists brew; then
             print_status "Installing Homebrew..."
             /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            
+
             # Add Homebrew to PATH for Apple Silicon Macs
             if [[ $(uname -m) == "arm64" ]]; then
                 echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
@@ -69,7 +68,7 @@ install_homebrew() {
 # Function to install system packages
 install_system_packages() {
     print_status "Installing system packages..."
-    
+
     if [[ "$OS" == "macos" ]]; then
         # Install core packages via Homebrew
         brew_packages=(
@@ -81,11 +80,9 @@ install_system_packages() {
             "zoxide"
             "direnv"
             "asdf"
-            "gh"
             "ripgrep"
             "fd"
             "bat"
-            "exa"
             "htop"
             "tree"
             "jq"
@@ -93,7 +90,7 @@ install_system_packages() {
             "httpie"
             "tldr"
         )
-        
+
         for package in "${brew_packages[@]}"; do
             if ! brew list "$package" >/dev/null 2>&1; then
                 print_status "Installing $package..."
@@ -102,11 +99,11 @@ install_system_packages() {
                 print_status "$package already installed"
             fi
         done
-        
+
         # Install additional tools
         brew install --cask visual-studio-code
         brew install --cask iterm2
-        
+
     elif [[ "$OS" == "linux" ]]; then
         # For Linux, you might want to add package manager detection
         print_warning "Linux package installation not implemented yet"
@@ -129,17 +126,17 @@ install_oh_my_zsh() {
 # Function to install Oh My Zsh plugins
 install_zsh_plugins() {
     print_status "Installing Oh My Zsh plugins..."
-    
+
     # zsh-autosuggestions
     if [[ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]]; then
         git clone https://github.com/zsh-users/zsh-autosuggestions "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
     fi
-    
+
     # zsh-syntax-highlighting
     if [[ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]]; then
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
     fi
-    
+
     print_success "Zsh plugins installed successfully"
 }
 
@@ -168,11 +165,11 @@ install_tpm() {
 # Function to install Neovim dependencies
 install_neovim_deps() {
     print_status "Installing Neovim dependencies..."
-    
+
     # Create necessary directories
     mkdir -p "$HOME/.local/share/nvim/site/pack/deps/start"
     mkdir -p "$HOME/.config/nvim"
-    
+
     # Install language servers and formatters via Mason (will be done when Neovim first runs)
     print_status "Neovim dependencies will be installed on first run via Mason"
 }
@@ -181,25 +178,25 @@ install_neovim_deps() {
 install_asdf_plugins() {
     if command_exists asdf; then
         print_status "Installing ASDF plugins..."
-        
+
         # Add plugins
         asdf plugin add nodejs || true
         asdf plugin add python || true
         asdf plugin add ruby || true
         asdf plugin add golang || true
-        
+
         # Install latest versions
-        asdf install nodejs latest
-        asdf install python latest
-        asdf install ruby latest
-        asdf install golang latest
-        
-        # Set global versions
-        asdf global nodejs latest
-        asdf global python latest
-        asdf global ruby latest
-        asdf global golang latest
-        
+        # asdf install nodejs latest
+        # asdf install python latest
+        # asdf install ruby latest
+        # asdf install golang latest
+        #
+        # # Set global versions
+        # asdf global nodejs latest
+        # asdf global python latest
+        # asdf global ruby latest
+        # asdf global golang latest
+
         print_success "ASDF plugins installed successfully"
     else
         print_warning "ASDF not found, skipping plugin installation"
@@ -210,9 +207,9 @@ install_asdf_plugins() {
 install_python_packages() {
     if command_exists python3; then
         print_status "Installing Python packages..."
-        
+
         python3 -m pip install --user --upgrade pip
-        
+
         pip_packages=(
             "pudb"
             "black"
@@ -222,11 +219,11 @@ install_python_packages() {
             "ipython"
             "jupyter"
         )
-        
+
         for package in "${pip_packages[@]}"; do
             python3 -m pip install --user "$package"
         done
-        
+
         print_success "Python packages installed successfully"
     fi
 }
@@ -235,7 +232,7 @@ install_python_packages() {
 install_node_packages() {
     if command_exists npm; then
         print_status "Installing Node.js packages..."
-        
+
         npm_packages=(
             "typescript"
             "eslint"
@@ -243,11 +240,11 @@ install_node_packages() {
             "ts-node"
             "nodemon"
         )
-        
+
         for package in "${npm_packages[@]}"; do
             npm install -g "$package"
         done
-        
+
         print_success "Node.js packages installed successfully"
     fi
 }
@@ -268,11 +265,11 @@ install_rust() {
 install_go_tools() {
     if command_exists go; then
         print_status "Installing Go tools..."
-        
+
         go install golang.org/x/tools/gopls@latest
         go install github.com/go-delve/delve/cmd/dlv@latest
         go install github.com/cosmtrek/air@latest
-        
+
         print_success "Go tools installed successfully"
     fi
 }
@@ -280,28 +277,28 @@ install_go_tools() {
 # Function to set up git configuration
 setup_git() {
     print_status "Setting up git configuration..."
-    
+
     # Set up the dotfiles repository
     if [[ ! -d "$HOME/.cfg" ]]; then
         git clone --bare https://github.com/yourusername/dotfiles.git "$HOME/.cfg"
         git --git-dir="$HOME/.cfg" --work-tree="$HOME" checkout
         git --git-dir="$HOME/.cfg" --work-tree="$HOME" config --local status.showUntrackedFiles no
     fi
-    
+
     print_success "Git configuration set up successfully"
 }
 
 # Function to finalize installation
 finalize_installation() {
     print_status "Finalizing installation..."
-    
+
     # Make zsh the default shell
     if [[ "$SHELL" != "/bin/zsh" ]] && [[ "$SHELL" != "/usr/bin/zsh" ]]; then
         print_status "Setting zsh as default shell..."
         chsh -s "$(which zsh)"
         print_warning "Please restart your terminal or run 'exec zsh' to use zsh"
     fi
-    
+
     # Install tmux plugins
     if command_exists tmux; then
         print_status "Installing tmux plugins..."
@@ -310,7 +307,7 @@ finalize_installation() {
         tmux send-keys -t 0 "prefix + I" Enter
         tmux kill-session
     fi
-    
+
     print_success "Installation completed successfully!"
     echo
     echo "Next steps:"
@@ -328,7 +325,7 @@ main() {
     echo "    Dotfiles Installation Script"
     echo "=========================================="
     echo
-    
+
     check_os
     install_homebrew
     install_system_packages
@@ -338,10 +335,10 @@ main() {
     install_tpm
     install_neovim_deps
     install_asdf_plugins
-    install_python_packages
-    install_node_packages
-    install_rust
-    install_go_tools
+    # install_python_packages
+    # install_node_packages
+    # install_rust
+    # install_go_tools
     setup_git
     finalize_installation
 }
