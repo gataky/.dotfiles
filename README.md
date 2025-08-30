@@ -55,18 +55,21 @@ This repository contains a comprehensive installation script that sets up all th
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/yourusername/dotfiles.git ~/.cfg
+   git clone git@github.com:gataky/.dotfiles.git ~/.cfg
    cd ~/.cfg
+   alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+   config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+   config checkout
    ```
 
 2. **Make the script executable:**
    ```bash
-   chmod +x install.sh
+   chmod +x ~/.config/dotfiles/install.sh
    ```
 
 3. **Run the installation script:**
    ```bash
-   ./install.sh
+   ./.config/dotfiles/install.sh
    ```
 
 ## What the Script Does
