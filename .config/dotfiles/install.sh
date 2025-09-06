@@ -185,92 +185,9 @@ install_asdf_plugins() {
         asdf plugin add ruby || true
         asdf plugin add golang || true
 
-        # Install latest versions
-        # asdf install nodejs latest
-        # asdf install python latest
-        # asdf install ruby latest
-        # asdf install golang latest
-        #
-        # # Set global versions
-        # asdf global nodejs latest
-        # asdf global python latest
-        # asdf global ruby latest
-        # asdf global golang latest
-
         print_success "ASDF plugins installed successfully"
     else
         print_warning "ASDF not found, skipping plugin installation"
-    fi
-}
-
-# Function to install Python packages
-install_python_packages() {
-    if command_exists python3; then
-        print_status "Installing Python packages..."
-
-        python3 -m pip install --user --upgrade pip
-
-        pip_packages=(
-            "pudb"
-            "black"
-            "flake8"
-            "mypy"
-            "pytest"
-            "ipython"
-            "jupyter"
-        )
-
-        for package in "${pip_packages[@]}"; do
-            python3 -m pip install --user "$package"
-        done
-
-        print_success "Python packages installed successfully"
-    fi
-}
-
-# Function to install Node.js packages
-install_node_packages() {
-    if command_exists npm; then
-        print_status "Installing Node.js packages..."
-
-        npm_packages=(
-            "typescript"
-            "eslint"
-            "prettier"
-            "ts-node"
-            "nodemon"
-        )
-
-        for package in "${npm_packages[@]}"; do
-            npm install -g "$package"
-        done
-
-        print_success "Node.js packages installed successfully"
-    fi
-}
-
-# Function to install Rust (if needed)
-install_rust() {
-    if ! command_exists cargo; then
-        print_status "Installing Rust..."
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        source "$HOME/.cargo/env"
-        print_success "Rust installed successfully"
-    else
-        print_status "Rust already installed"
-    fi
-}
-
-# Function to install Go tools
-install_go_tools() {
-    if command_exists go; then
-        print_status "Installing Go tools..."
-
-        go install golang.org/x/tools/gopls@latest
-        go install github.com/go-delve/delve/cmd/dlv@latest
-        go install github.com/cosmtrek/air@latest
-
-        print_success "Go tools installed successfully"
     fi
 }
 
@@ -335,10 +252,6 @@ main() {
     install_tpm
     install_neovim_deps
     install_asdf_plugins
-    # install_python_packages
-    # install_node_packages
-    # install_rust
-    # install_go_tools
     setup_git
     finalize_installation
 }
