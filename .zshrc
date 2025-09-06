@@ -115,6 +115,8 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 export PATH=/opt/homebrew/bin:$PATH
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
 
+alias ll="ls -la"
+
 alias vim=nvim
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias config_checkout=`config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}`
