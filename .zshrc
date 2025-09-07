@@ -113,7 +113,8 @@ source $ZSH/oh-my-zsh.sh
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 export PATH=/opt/homebrew/bin:$PATH
-export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$PATH
+
 
 alias ll="ls -la"
 
