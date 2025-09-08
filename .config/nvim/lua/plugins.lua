@@ -18,6 +18,20 @@ require('plugins.nvim_tree')
 require('plugins.conform')
 require('plugins.neotest')
 
+
+local utilities_dir = vim.fn.expand("~/Documents/utilities.nvim")
+if vim.fn.isdirectory(utilities_dir) then
+    vim.opt.runtimepath:append(vim.fn.expand(utilities_dir))
+    add({source = utilities_dir, checkout = "HEAD"})
+
+    -- https://google.com
+    vim.api.nvim_set_keymap('n', '<leader>ou', ':lua require("utilities").open_url_under_cursor()<CR>', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('v', '<leader>gl', ':lua require("utilities").get_repo_link_for_selection()<CR>', { noremap = true, silent = true })
+
+end
+
+
+
 -- Mini plugins
 require('plugins.mini_basics')
 require('plugins.mini_git')
@@ -35,7 +49,7 @@ require('plugins.mini_fuzzy')
 require('plugins.mini_indentscope')
 require('plugins.mini_jump')
 require('plugins.mini_jump2d')
-require('plugins.mini_pairs')
+-- require('plugins.mini_pairs')
 require('plugins.mini_surround')
 require('plugins.mini_bufremove')
 require('plugins.mini_trailspace')

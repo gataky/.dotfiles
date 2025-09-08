@@ -15,6 +15,7 @@ end
 local deps = require('mini.deps')
 deps.setup({ path = { package = path_package } })
 
+
 -- Load core settings
 require('core.options')
 require('core.keymaps')
