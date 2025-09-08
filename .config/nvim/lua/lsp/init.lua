@@ -1,4 +1,3 @@
--- Simplified for debugging
 local lspconfig = require('lspconfig')
 
 -- Common on_attach function
@@ -38,12 +37,19 @@ vim.diagnostic.config({
   },
 })
 
--- Manually set up ONE server to isolate the issue
-local server_name = "basedpyright"
-local server_config = require("lsp." .. server_name)
+-- Dynamically set up all LSP servers
+local lsp_path = vim.fn.stdpath('config') .. '/lua/lsp'
+local lsp_files = vim.fn.readdir(lsp_path)
 
-local final_config = vim.tbl_deep_extend("force", {
-    on_attach = on_attach,
-}, server_config)
+for _, file_name in ipairs(lsp_files) do
+    if file_name:match('%.lua$') and file_name ~= 'init.lua' then
+        local server_name = file_name:gsub('%.lua$', '')
+        local server_config = require('lsp.' .. server_name)
 
-lspconfig[server_name].setup(final_config)
+        local final_config = vim.tbl_deep_extend("force", {
+            on_attach = on_attach,
+        }, server_config)
+
+        lspconfig[server_name].setup(final_config)
+    end
+end
