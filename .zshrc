@@ -120,7 +120,17 @@ alias ll="ls -la"
 alias vim=nvim
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias config_checkout=`config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}`
-alias sso='aws sso login --profile zillow-stage'
+
+sso() {
+    # SSO login.  When no argument is given, will attempt to login to default account
+    # otherwise will attempt to login with zillow-$1.
+    # These profiles are set in ~/.aws/config
+    if [ -z "$1" ]; then
+        aws sso login
+    else
+        aws sso login --profile "zillow-$1"
+    fi
+}
 
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(direnv hook zsh)"
