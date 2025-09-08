@@ -121,6 +121,7 @@ alias ll="ls -la"
 alias vim=nvim
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias config_checkout=`config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}`
+alias sso='aws sso login --profile zillow-stage'
 
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(direnv hook zsh)"
