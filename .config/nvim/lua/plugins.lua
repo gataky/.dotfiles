@@ -1,22 +1,23 @@
-local deps = require('mini.deps')
-_G.add = deps.add -- Make 'add' global
-_G.now = deps.now -- Make 'now' global
-_G.later = deps.later -- Make 'later' global
 
--- Load individual plugin configurations
+-- Core functionality plugins
 require('plugins.lspconfig')
+require('plugins.mason')
+require('plugins.treesitter')
+require('plugins.conform')
+
+-- File management and navigation
+require('plugins.telescope')
+require('plugins.neo_tree')
+require('plugins.tmux_navigation')
+
+-- Git integration
 require('plugins.neogit')
 require('plugins.diffview')
-require('plugins.tmux_navigation')
-require('plugins.telescope')
-require('plugins.treesitter')
-require('plugins.mason')
-require('plugins.gruvbox_material')
-require('plugins.avante')
-require('plugins.render_markdown')
-require('plugins.nvim_tree')
-require('plugins.conform')
+
+-- Development tools
 require('plugins.neotest')
+require('plugins.render_markdown')
+require('plugins.avante')
 
 -- Mini plugins
 require('plugins.mini_basics')
@@ -43,7 +44,10 @@ require('plugins.mini_trailspace')
 local utilities_dir = vim.fn.expand("~/Documents/utilities.nvim")
 if vim.fn.isdirectory(utilities_dir) ~= 0 then
     vim.opt.runtimepath:append(vim.fn.expand(utilities_dir))
-    add({source = utilities_dir, checkout = "HEAD"})
-    vim.api.nvim_set_keymap('n', '<leader>ou', ':lua require("utilities").open_url_under_cursor()<CR>', { noremap = true, silent = true })
-    vim.api.nvim_set_keymap('v', '<leader>gl', ':lua require("utilities").get_repo_link_for_selection()<CR>', { noremap = true, silent = true })
+    add({ source = utilities_dir, checkout = "HEAD" })
+
+    local utils = require("utilities")
+    local opts = { noremap = true, silent = true }
+    vim.api.nvim_set_keymap('n', '<leader>ou', utils.open_url_under_cursor, opts)
+    vim.api.nvim_set_keymap('v', '<leader>gl', utils.get_repo_link_for_selection, opts)
 end

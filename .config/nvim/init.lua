@@ -13,12 +13,18 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 local deps = require('mini.deps')
+_G.add = deps.add     -- Make 'add' global
+_G.now = deps.now     -- Make 'now' global
+_G.later = deps.later -- Make 'later' global
 deps.setup({ path = { package = path_package } })
 
 
 -- Load core settings
 require('core.options')
 require('core.keymaps')
+
+-- Load themes
+require('themes')
 
 -- Load plugin manager and plugin configs
 require('plugins')
