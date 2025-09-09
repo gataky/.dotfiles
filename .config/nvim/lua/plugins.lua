@@ -40,6 +40,8 @@ require('plugins.mini_surround')
 require('plugins.mini_bufremove')
 require('plugins.mini_trailspace')
 
+require('plugins.nvim_colorizer')
+
 -- Local plugins
 local utilities_dir = vim.fn.expand("~/Documents/utilities.nvim")
 if vim.fn.isdirectory(utilities_dir) ~= 0 then
