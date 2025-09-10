@@ -180,10 +180,11 @@ install_asdf_plugins() {
         print_status "Installing ASDF plugins..."
 
         # Add plugins
-        asdf plugin add nodejs || true
-        asdf plugin add python || true
-        asdf plugin add ruby || true
         asdf plugin add golang || true
+        asdf plugin add python || true
+        asdf plugin add nodejs || true
+        asdf plugin add ruby   || true
+        asdf plugin add dasel https://github.com/asdf-community/asdf-dasel.git || true
 
         print_success "ASDF plugins installed successfully"
     else

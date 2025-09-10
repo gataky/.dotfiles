@@ -42,14 +42,14 @@ require('plugins.mini_trailspace')
 
 require('plugins.nvim_colorizer')
 
--- Local plugins
-local utilities_dir = vim.fn.expand("~/Documents/utilities.nvim")
-if vim.fn.isdirectory(utilities_dir) ~= 0 then
-    vim.opt.runtimepath:append(vim.fn.expand(utilities_dir))
-    add({ source = utilities_dir, checkout = "HEAD" })
-
-    local utils = require("utilities")
-    local opts = { noremap = true, silent = true }
-    vim.api.nvim_set_keymap('n', '<leader>ou', utils.open_url_under_cursor, opts)
-    vim.api.nvim_set_keymap('v', '<leader>gl', utils.get_repo_link_for_selection, opts)
-end
+-- -- Local plugins
+-- local utilities_dir = vim.fn.expand("~/Documents/utilities.nvim")
+-- if vim.fn.isdirectory(utilities_dir) ~= 0 then
+--     vim.opt.runtimepath:append(vim.fn.expand(utilities_dir))
+--     add({ source = utilities_dir, checkout = "HEAD" })
+--
+--     local utils = require("utilities")
+--     local opts = { noremap = true, silent = true }
+--     vim.api.nvim_set_keymap('n', '<leader>ou', utils.open_url_under_cursor, opts)
+--     vim.api.nvim_set_keymap('v', '<leader>gl', utils.get_repo_link_for_selection, opts)
+-- end
