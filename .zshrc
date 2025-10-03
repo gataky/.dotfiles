@@ -165,3 +165,25 @@ colors256() {
     done
     printf "|\n"
 }
+
+
+# Share history *upon exit*, not constantly
+# This is the key setting for per-session history fidelity
+setopt NO_SHARE_HISTORY
+
+# Save history to file
+setopt INC_APPEND_HISTORY
+
+# Add history to history file *when a shell exits*
+setopt APPEND_HISTORY
+
+# Keep the history file synched with the current session's commands
+# This ensures history is added to the *current session's memory* immediately
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+# setopt HIST_SAVE_NATIVE
+
+# How many lines of history to keep in memory (Histsize) and in the file (Savehist)
+HISTSIZE=10000
+SAVEHIST=10000
