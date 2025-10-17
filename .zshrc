@@ -116,10 +116,11 @@ export PATH=/opt/homebrew/bin:$PATH
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$PATH
 export EDITOR=nvim
 
-alias ll="ls -la"
+alias ll="ls -l"
+alias la="ls -la"
 
 alias vim=nvim
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/.git --work-tree=$HOME'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias config_checkout=`config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}`
 
 sso() {
@@ -187,3 +188,4 @@ setopt HIST_IGNORE_SPACE
 # How many lines of history to keep in memory (Histsize) and in the file (Savehist)
 HISTSIZE=10000
 SAVEHIST=10000
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"

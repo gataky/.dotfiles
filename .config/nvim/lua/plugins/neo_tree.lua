@@ -1,13 +1,3 @@
--- add({ source = 'nvim-tree/nvim-tree.lua' })
--- add({ source = 'nvim-tree/nvim-web-devicons' })
-
--- later(function()
---     require("nvim-tree").setup()
---     require('nvim-web-devicons').setup()
---
---     vim.api.nvim_set_keymap('n', '<leader>e', ':NvimTreeToggle<cr>', { noremap = true, expr = false })
--- end)
-
 add({
     source = 'nvim-neo-tree/neo-tree.nvim',
     checkout = 'v3.x',
@@ -23,17 +13,18 @@ later(function()
         filesystem = {
             filtered_items = {
                 hide_dotfiles = false,
-            }
+            },
+            use_libuv_file_watcher = true,
         },
         default_component_configs = {
             indent = {
                 with_expanders = true,
-                expander_collapsed = "",
-                expander_expanded = "",
+                expander_collapsed = "",
+                expander_expanded = "",
                 expander_highlight = "NeoTreeExpander",
             },
         },
     })
 
-    vim.api.nvim_set_keymap('n', '<leader>e', ':Neotree toggle<cr>', { noremap = true, expr = false })
+    vim.api.nvim_set_keymap('n', '<leader>e', ':Neotree toggle reveal<cr>', { noremap = true, expr = false })
 end)

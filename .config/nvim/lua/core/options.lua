@@ -27,6 +27,13 @@ vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
 
 vim.g.mapleader = " "
 
+-- AWS environment variables for Bedrock
+vim.env.AWS_PROFILE = "zillow-sandbox"
+vim.env.AWS_REGION = "us-west-2"
+vim.env.HOME = vim.fn.expand("~")
+-- Ensure AWS CLI and Homebrew curl are in PATH (Homebrew bins should come first)
+vim.env.PATH = "/opt/homebrew/bin:/opt/homebrew/opt/curl/bin:" .. vim.env.PATH
+
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0

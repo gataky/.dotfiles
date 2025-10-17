@@ -57,7 +57,7 @@ This repository contains a comprehensive installation script that sets up all th
    ```bash
    git clone git@github.com:gataky/.dotfiles.git ~/.cfg
    cd ~/.cfg
-   alias config='/usr/bin/git --git-dir=$HOME/.cfg/.git --work-tree=$HOME'
+   alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
    config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
    config checkout
    ```
