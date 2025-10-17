@@ -51,14 +51,49 @@ This repository contains a comprehensive installation script that sets up all th
 - Internet connection
 - Administrator privileges (for some installations)
 
-## Quick Start
+## Setup Instructions
 
-1. **Clone this repository:**
+### Starting Fresh (New Dotfiles Repository)
+
+If you're creating a new dotfiles repository from scratch:
+
+```bash
+# Initialize bare repository
+git init --bare $HOME/.cfg
+
+# Create the config alias
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# Hide untracked files (essential for home directory work-tree)
+config config --local status.showUntrackedFiles no
+
+# Add the alias to your shell config
+echo "alias config='/usr/bin/git --git-dir=\$HOME/.cfg/ --work-tree=\$HOME'" >> ~/.zshrc
+
+# Add your dotfiles
+config add .zshrc .tmux.conf .config/nvim
+config commit -m "Initial commit"
+config remote add origin git@github.com:yourusername/dotfiles.git
+config push -u origin main
+```
+
+### Cloning to a New Machine (Quick Start)
+
+1. **Clone this repository as a bare repository:**
    ```bash
-   git clone git@github.com:gataky/.dotfiles.git ~/.cfg
-   cd ~/.cfg
+   git clone --bare git@github.com:gataky/.dotfiles.git $HOME/.cfg
+
+   # Create the config alias
    alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-   config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+
+   # Hide untracked files (essential for home directory work-tree)
+   config config --local status.showUntrackedFiles no
+
+   # Backup existing dotfiles (optional)
+   mkdir -p .config-backup
+   config checkout 2>&1 | grep -E "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+
+   # Checkout your dotfiles
    config checkout
    ```
 
