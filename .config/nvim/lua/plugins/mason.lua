@@ -12,6 +12,7 @@ later(function()
             'ruff-lsp',
             'typescript-language-server',
             'vue-language-server',
+            'omnisharp',
         },
         ui = {
             border = border,

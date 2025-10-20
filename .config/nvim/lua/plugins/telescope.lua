@@ -9,7 +9,7 @@ later(function()
     telescope.setup({})
 
     vim.api.nvim_set_keymap('n', "<C-p>", '', {
-        callback = function() require('telescope.builtin').find_files({ hidden = true }) end,
+        callback = function() require('telescope.builtin').find_files({ hidden = true, find_command = { 'rg', '--files' } }) end,
         noremap = true,
     })
     vim.api.nvim_set_keymap('n', '<leader>sw', '', {

@@ -72,23 +72,24 @@ install_system_packages() {
     if [[ "$OS" == "macos" ]]; then
         # Install core packages via Homebrew
         brew_packages=(
-            "git"
-            "zsh"
-            "tmux"
-            "neovim"
-            "fzf"
-            "zoxide"
-            "direnv"
             "asdf"
-            "ripgrep"
-            "fd"
             "bat"
+            "direnv"
+            "fd"
+            "fzf"
+            "git"
             "htop"
-            "tree"
-            "jq"
-            "yq"
             "httpie"
+            "jq"
+            "just"
+            "neovim"
+            "ripgrep"
             "tldr"
+            "tmux"
+            "tree"
+            "yq"
+            "zoxide"
+            "zsh"
         )
 
         for package in "${brew_packages[@]}"; do

@@ -113,6 +113,7 @@ source $ZSH/oh-my-zsh.sh
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 export PATH=/opt/homebrew/bin:$PATH
+export PATH="$PATH:/Users/jeff/.dotnet/tools"
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$HOME/.local/share/nvim/mason/bin:$PATH
 export EDITOR=nvim
 
@@ -184,6 +185,7 @@ setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
 # setopt HIST_SAVE_NATIVE
+
 
 # How many lines of history to keep in memory (Histsize) and in the file (Savehist)
 HISTSIZE=10000

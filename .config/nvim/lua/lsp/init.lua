@@ -18,25 +18,25 @@ end
 
 -- Diagnostic configuration
 vim.diagnostic.config({
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = "",
-      [vim.diagnostic.severity.WARN] = "",
-      [vim.diagnostic.severity.HINT] = "",
-      [vim.diagnostic.severity.INFO] = "",
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "",
+            [vim.diagnostic.severity.WARN] = "",
+            [vim.diagnostic.severity.HINT] = "",
+            [vim.diagnostic.severity.INFO] = "",
+        },
     },
-  },
-  update_in_insert = true,
-  underline = true,
-  severity_sort = true,
-  float = {
-    focusable = false,
-    style = "minimal",
-    source = "always",
-    header = "",
-    prefix = "",
-    suffix = "",
-  },
+    update_in_insert = true,
+    underline = true,
+    severity_sort = true,
+    float = {
+        focusable = false,
+        style = "minimal",
+        source = "always",
+        header = "",
+        prefix = "",
+        suffix = "",
+    },
 })
 
 -- Dynamically set up all LSP servers
