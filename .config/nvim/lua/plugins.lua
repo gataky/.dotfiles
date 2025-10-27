@@ -17,7 +17,7 @@ require('plugins.diffview')
 -- Development tools
 require('plugins.neotest')
 require('plugins.render_markdown')
-require('plugins.avante')
+-- require('plugins.avante')
 
 -- Mini plugins
 require('plugins.mini_basics')
