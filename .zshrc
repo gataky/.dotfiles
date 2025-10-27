@@ -136,8 +136,6 @@ sso() {
 }
 
 [[ $- == *i* ]] && eval "$(zoxide init --cmd cd zsh)"
-# eval "$(zoxide init --cmd cd zsh)"
-#
 eval "$(direnv hook zsh)"
 eval "$(fzf --zsh)"
 

@@ -53,3 +53,11 @@ require('plugins.nvim_colorizer')
 --     vim.api.nvim_set_keymap('n', '<leader>ou', utils.open_url_under_cursor, opts)
 --     vim.api.nvim_set_keymap('v', '<leader>gl', utils.get_repo_link_for_selection, opts)
 -- end
+
+-- Add to runtime path
+vim.opt.rtp:append('/Users/jeffor/Documents/mrreviewer')
+require('mrreviewer').setup({
+    glab = {
+      mock_mode = true,
+    },
+})

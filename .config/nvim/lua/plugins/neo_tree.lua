@@ -19,8 +19,8 @@ later(function()
         default_component_configs = {
             indent = {
                 with_expanders = true,
-                expander_collapsed = "",
-                expander_expanded = "",
+                expander_collapsed = "",
+                expander_expanded = "",
                 expander_highlight = "NeoTreeExpander",
             },
         },
