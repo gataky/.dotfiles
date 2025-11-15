@@ -15,9 +15,9 @@ now(function()
     -- Custom function to show Greek mode
     local function greek_mode()
         if vim.b.iminsert == 1 or vim.opt.iminsert:get() == 1 then
-            return 'Ελ'  -- '🇬🇷' or whatever indicator you prefer
+            return '🇬🇷'  -- '🇬🇷' or whatever indicator you prefer
         end
-        return 'En' -- 🇬🇧
+        return '🇬🇧' -- 🇬🇧
     end
 
     local create_statusline_separator = function(before_hl, after_hl, char)

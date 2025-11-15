@@ -31,3 +31,5 @@ require('plugins')
 
 -- Load LSP configurations
 require('lsp')
+
+require('greek')
