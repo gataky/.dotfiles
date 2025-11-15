@@ -1,5 +1,3 @@
-local lspconfig = require('lspconfig')
-
 -- Common on_attach function
 local on_attach = function(client, buffer)
     local opts = { buffer = buffer, noremap = true, silent = true }
@@ -52,6 +50,8 @@ for _, file_name in ipairs(lsp_files) do
             on_attach = on_attach,
         }, server_config)
 
-        lspconfig[server_name].setup(final_config)
+        -- Use vim.lsp.config instead of lspconfig (Neovim 0.11+)
+        vim.lsp.config[server_name] = final_config
+        vim.lsp.enable(server_name)
     end
 end

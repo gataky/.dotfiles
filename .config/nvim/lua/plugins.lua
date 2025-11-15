@@ -55,9 +55,9 @@ require('plugins.nvim_colorizer')
 -- end
 
 -- Add to runtime path
-vim.opt.rtp:append('/Users/jeffor/Documents/mrreviewer')
-require('mrreviewer').setup({
-    glab = {
-      mock_mode = true,
-    },
-})
+-- vim.opt.rtp:append('/Users/jeffor/Documents/mrreviewer')
+-- require('mrreviewer').setup({
+--     glab = {
+--       mock_mode = true,
+--     },
+-- })

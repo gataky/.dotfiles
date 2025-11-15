@@ -12,6 +12,14 @@ now(function()
       HINT  = string.format("%%#%s#%s", hint, ""),
     }
 
+    -- Custom function to show Greek mode
+    local function greek_mode()
+        if vim.b.iminsert == 1 or vim.opt.iminsert:get() == 1 then
+            return 'Ελ'  -- '🇬🇷' or whatever indicator you prefer
+        end
+        return 'En' -- 🇬🇧
+    end
+
     local create_statusline_separator = function(before_hl, after_hl, char)
         local hl_name = string.format("Statusline%s%s", before_hl, after_hl)
         vim.cmd(
@@ -39,9 +47,11 @@ now(function()
         local filename      = statusline.section_filename({ trunc_width = 140 })
         local fileinfo      = statusline.section_fileinfo({ trunc_width = 120 })
         local search        = statusline.section_searchcount({ trunc_width = 75 })
+        local greek         = greek_mode()
 
         return statusline.combine_groups {
-            { hl = mode_hl,                  strings = { mode } },
+            { hl = mode_hl, strings = { greek } },
+            { hl = mode_hl, strings = { mode } },
             "%<", -- Mark general truncate point
             create_statusline_separator(mode_hl, "MiniStatuslineGit", ""),
             { hl = "MiniStatuslineGit", strings = { git } },
