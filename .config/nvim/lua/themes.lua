@@ -8,3 +8,4 @@ require('plugins.kanagawa')
 -- Set the active colorscheme
 -- Change this to switch themes: 'gruvbox-material', 'kanagawa', etc.
 vim.cmd('colorscheme gruvbox-material')
+-- vim.cmd('colorscheme lemons')

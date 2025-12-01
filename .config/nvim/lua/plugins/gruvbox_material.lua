@@ -1,4 +1,5 @@
 -- Gruvbox Material theme configuration
+add({ source = 'Kaikacy/Lemons.nvim' })
 add({ source = 'sainnhe/gruvbox-material' })
 
 now(function()

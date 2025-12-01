@@ -46,8 +46,20 @@ for _, file_name in ipairs(lsp_files) do
         local server_name = file_name:gsub('%.lua$', '')
         local server_config = require('lsp.' .. server_name)
 
+        -- If server has custom on_attach, wrap it to call common on_attach first
+        local final_on_attach = on_attach
+        if server_config.on_attach then
+            local custom_on_attach = server_config.on_attach
+            final_on_attach = function(client, bufnr)
+                -- Call common on_attach first for standard key bindings
+                on_attach(client, bufnr)
+                -- Then call custom on_attach with the common one passed as third arg
+                custom_on_attach(client, bufnr, on_attach)
+            end
+        end
+
         local final_config = vim.tbl_deep_extend("force", {
-            on_attach = on_attach,
+            on_attach = final_on_attach,
         }, server_config)
 
         -- Use vim.lsp.config instead of lspconfig (Neovim 0.11+)
