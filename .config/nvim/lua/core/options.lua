@@ -2,29 +2,6 @@
 local border = 'rounded'
 vim.o.winborder = 'rounded'
 
-vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
-    group = vim.api.nvim_create_augroup("Color", {}),
-    pattern = "*",
-    callback = function()
-        -- local color = { fg = "#00ff00" }
-        local color = { link = "DiagnosticWarn" }
-        --
-        vim.api.nvim_set_hl(0, "FloatBorder", color)
-        vim.api.nvim_set_hl(0, "MiniNotifyBorder", color)
-
-        vim.api.nvim_set_hl(0, "TelescopePreviewBorder", color)
-        vim.api.nvim_set_hl(0, "TelescopeResultsBorder", color)
-        vim.api.nvim_set_hl(0, "TelescopePromptBorder", color)
-
-        vim.api.nvim_set_hl(0, "LspFloatWinBorder", color)
-
-        vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
-
-        vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "NONE" })
-        vim.api.nvim_set_hl(0, "NeoTreeEndOfBuffer", { bg = "NONE" })
-    end,
-})
-
 vim.g.mapleader = " "
 
 -- AWS environment variables for Bedrock
@@ -50,18 +27,3 @@ vim.o.tabstop = 4      -- A TAB character looks like 4 spaces
 vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
 vim.o.softtabstop = 4  -- Number of spaces inserted instead of a TAB character
 vim.o.shiftwidth = 4
-
-
--- Hack for Telescope issue with nvim 0.11
-vim.api.nvim_create_autocmd("User", {
-    pattern = "TelescopeFindPre",
-    callback = function()
-        vim.opt_local.winborder = "none"
-        vim.api.nvim_create_autocmd("WinLeave", {
-            once = true,
-            callback = function()
-                vim.opt_local.winborder = "rounded"
-            end,
-        })
-    end,
-})

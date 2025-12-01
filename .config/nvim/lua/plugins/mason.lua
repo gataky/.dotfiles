@@ -5,17 +5,8 @@ add({
 
 later(function()
     require('mason').setup({
-        ensure_installed = {
-            'basedpyright',
-            'gopls',
-            'lua-language-server',
-            'ruff-lsp',
-            'typescript-language-server',
-            'vue-language-server',
-            'omnisharp',
-        },
         ui = {
-            border = border,
+            border = 'rounded',
             icons = {
                 package_installed = "✓",
                 package_pending = "➜",

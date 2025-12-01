@@ -8,7 +8,7 @@ add({
     hooks = { post_checkout = function() vim.cmd('TSUpdate') end },
 })
 
-now(function()
+later(function()
     require('nvim-treesitter.configs').setup({
         ensure_installed = {
             'bash',

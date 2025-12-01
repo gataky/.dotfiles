@@ -22,12 +22,14 @@ now(function()
 
     local create_statusline_separator = function(before_hl, after_hl, char)
         local hl_name = string.format("Statusline%s%s", before_hl, after_hl)
+        local before_bg = vim.api.nvim_get_hl(0, { name = before_hl }).bg or 0
+        local after_bg = vim.api.nvim_get_hl(0, { name = after_hl }).bg or 0
         vim.cmd(
             string.format(
                 [[ hi! %s guifg=%s guibg=%s ]],
                 hl_name,
-                string.format("#%06x", vim.api.nvim_get_hl_by_name(before_hl, true).background),
-                string.format("#%06x", vim.api.nvim_get_hl_by_name(after_hl, true).background)
+                string.format("#%06x", before_bg),
+                string.format("#%06x", after_bg)
             )
         )
         return "%#" .. hl_name .. "#" .. char
