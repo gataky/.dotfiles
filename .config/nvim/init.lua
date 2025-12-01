@@ -22,6 +22,7 @@ deps.setup({ path = { package = path_package } })
 -- Load core settings
 require('core.options')
 require('core.keymaps')
+require('core.autocmd')
 
 -- Load themes
 require('themes')
