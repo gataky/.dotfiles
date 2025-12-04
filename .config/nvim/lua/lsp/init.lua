@@ -94,8 +94,7 @@ for _, file_name in ipairs(lsp_files) do
         -- Set capabilities (always set, don't let server override)
         final_config.capabilities = capabilities
 
-        -- Use vim.lsp.config instead of lspconfig (Neovim 0.11+)
-        vim.lsp.config[server_name] = final_config
-        vim.lsp.enable(server_name)
+        -- Use lspconfig's setup method
+        lspconfig[server_name].setup(final_config)
     end
 end

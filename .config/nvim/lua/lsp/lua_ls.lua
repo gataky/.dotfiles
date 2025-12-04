@@ -7,16 +7,18 @@ return {
 	filetypes = {
 		"lua",
 	},
-	root_markers = {
-		".git",
-		".luacheckrc",
-		".luarc.json",
-		".luarc.jsonc",
-		".stylua.toml",
-		"selene.toml",
-		"selene.yml",
-		"stylua.toml",
-	},
+	root_dir = function(fname)
+		return vim.fs.root(fname, {
+			".git",
+			".luacheckrc",
+			".luarc.json",
+			".luarc.jsonc",
+			".stylua.toml",
+			"selene.toml",
+			"selene.yml",
+			"stylua.toml",
+		})
+	end,
 	settings = {
 		Lua = {
 			diagnostics = {
