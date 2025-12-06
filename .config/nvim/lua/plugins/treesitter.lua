@@ -14,6 +14,8 @@ later(function()
             'bash',
             'go',
             'lua',
+            'markdown',
+            'markdown_inline',
             'python',
             'tmux',
             'typescript',
