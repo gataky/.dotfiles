@@ -1,5 +1,3 @@
-local lspconfig = require('lspconfig')
-
 -- Set up LSP capabilities for completion
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 -- Integrate with mini.completion if available
@@ -94,7 +92,8 @@ for _, file_name in ipairs(lsp_files) do
         -- Set capabilities (always set, don't let server override)
         final_config.capabilities = capabilities
 
-        -- Use lspconfig's setup method
-        lspconfig[server_name].setup(final_config)
+        -- Use the new vim.lsp.config API (nvim 0.12+)
+        vim.lsp.config[server_name] = final_config
+        vim.lsp.enable(server_name)
     end
 end

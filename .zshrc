@@ -124,6 +124,8 @@ alias vim=nvim
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias config_checkout=`config checkout 2>&1 | egrep "^\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}`
 
+export ENABLE_LSP_TOOL=1
+
 sso() {
     # SSO login.  When no argument is given, will attempt to login to default account
     # otherwise will attempt to login with zillow-$1.
@@ -191,3 +193,7 @@ setopt HIST_IGNORE_SPACE
 HISTSIZE=10000
 SAVEHIST=10000
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+export PATH="/Users/jeffor/.flutter/flutter/bin:$PATH"
+
+export ANDROID_HOME="/Users/jeffor/Library/Android/sdk"
+export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH"

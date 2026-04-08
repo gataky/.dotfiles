@@ -3,6 +3,7 @@ local border = 'rounded'
 vim.o.winborder = 'rounded'
 
 vim.g.mapleader = " "
+vim.o.termguicolors = true
 
 -- AWS environment variables for Bedrock
 vim.env.AWS_PROFILE = "zillow-sandbox"
