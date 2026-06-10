@@ -197,3 +197,5 @@ export PATH="/Users/jeffor/.flutter/flutter/bin:$PATH"
 
 export ANDROID_HOME="/Users/jeffor/Library/Android/sdk"
 export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH"
+
+export PATH="$HOME/Documents/work/bin:$PATH"
