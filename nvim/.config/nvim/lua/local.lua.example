@@ -1,0 +1,9 @@
+-- Machine/employer-specific overrides.
+--
+-- Copy this file to `local.lua` (gitignored, not tracked) and fill in your
+-- own values. `init.lua` loads `local.lua` optionally, so it's safe to leave
+-- it absent.
+
+-- AWS environment variables for Bedrock
+-- vim.env.AWS_PROFILE = "your-profile"
+-- vim.env.AWS_REGION = "us-west-2"

@@ -5,9 +5,6 @@ vim.o.winborder = 'rounded'
 vim.g.mapleader = " "
 vim.o.termguicolors = true
 
--- AWS environment variables for Bedrock
-vim.env.AWS_PROFILE = "zillow-sandbox"
-vim.env.AWS_REGION = "us-west-2"
 vim.env.HOME = vim.fn.expand("~")
 -- Ensure AWS CLI and Homebrew curl are in PATH (Homebrew bins should come first)
 vim.env.PATH = "/opt/homebrew/bin:/opt/homebrew/opt/curl/bin:" .. vim.env.PATH

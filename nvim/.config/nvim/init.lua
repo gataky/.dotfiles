@@ -27,6 +27,9 @@ require('core.options')
 require('core.keymaps')
 require('core.autocmd')
 
+-- Optional machine/employer-specific overrides (gitignored, see local.lua.example)
+pcall(require, 'local')
+
 -- Load themes
 require('themes')
 

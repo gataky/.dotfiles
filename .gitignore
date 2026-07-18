@@ -1,0 +1,11 @@
+# Machine/employer-specific overrides
+nvim/.config/nvim/lua/local.lua
+zsh/.zshrc.local
+
+# OS cruft
+.DS_Store
+
+# Editor swap/backup files
+*.swp
+*.swo
+*~

@@ -46,27 +46,27 @@ vim.api.nvim_create_autocmd({ "ColorScheme", "VimEnter" }, {
 
 -- Hack for Telescope issue with nvim 0.11
 vim.api.nvim_create_autocmd("User", {
-  pattern = "TelescopeFindPre",
-  callback = function()
-    vim.opt_local.winborder = "none"
-    vim.api.nvim_create_autocmd("WinLeave", {
-      once = true,
-      callback = function()
-        vim.opt_local.winborder = "rounded"
-      end,
-    })
-  end,
+    pattern = "TelescopeFindPre",
+    callback = function()
+        vim.opt_local.winborder = "none"
+        vim.api.nvim_create_autocmd("WinLeave", {
+            once = true,
+            callback = function()
+                vim.opt_local.winborder = "rounded"
+            end,
+        })
+    end,
 })
 
 -- Automatic Centering with Autocommands, when navigating makes sure the spot you're navigating
 -- to is centered in the buffer.
 vim.api.nvim_create_autocmd("BufReadPost", {
-  group = vim.api.nvim_create_augroup("CenterJump", { clear = true }),
-  callback = function()
-    -- Check if the current file type is one where jumping is common
-    -- For example, you might exclude files like 'help' or 'packer' windows
-    vim.cmd("normal! zz")
-  end,
-  -- This pattern ensures it runs on most files
-  pattern = "*",
+    group = vim.api.nvim_create_augroup("CenterJump", { clear = true }),
+    callback = function()
+        -- Check if the current file type is one where jumping is common
+        -- For example, you might exclude files like 'help' or 'packer' windows
+        vim.cmd("normal! zz")
+    end,
+    -- This pattern ensures it runs on most files
+    pattern = "*",
 })

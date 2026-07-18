@@ -1,0 +1,6 @@
+# Machine/employer-specific overrides.
+#
+# Copy this file to ~/.zshrc.local (gitignored, not tracked) and customize.
+# It's sourced optionally near the end of .zshrc, so it's safe to leave absent.
+
+# export SSO_PROFILE_PREFIX="your-employer"
