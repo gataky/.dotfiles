@@ -5,16 +5,15 @@ directory is a stow package mirroring its layout under `$HOME`.
 
 ## Packages
 
-- `nvim`    -> `~/.config/nvim`
-- `zsh`     -> `~/.zshrc`
-- `tmux`    -> `~/.tmux.conf`
-- `scripts` -> `~/.local/bin`
+- `nvim` -> `~/.config/nvim`
+- `zsh`  -> `~/.zshrc`
+- `tmux` -> `~/.tmux.conf`
 
 ## Usage
 
 ```
 cd ~/.dotfiles
-stow nvim zsh tmux scripts   # symlink everything
-stow -D nvim                 # unlink one package
-stow -R nvim                 # restow (after adding/removing files)
+stow nvim zsh tmux   # symlink everything
+stow -D nvim         # unlink one package
+stow -R nvim         # restow (after adding/removing files)
 ```
