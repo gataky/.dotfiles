@@ -1,2 +1,2 @@
-require('plugins.gruvbox_material')
+require('plugins.colorizer')
 vim.cmd('colorscheme gruvbox-material')
