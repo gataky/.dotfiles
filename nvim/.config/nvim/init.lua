@@ -26,17 +26,19 @@ deps.setup({ path = { package = path_package } })
 require('core.options')
 require('core.keymaps')
 require('core.autocmd')
+require('core.greek')
 
 -- Optional machine/employer-specific overrides (gitignored, see local.lua.example)
 pcall(require, 'local')
 
--- Load themes
-require('themes')
-
--- Load plugin manager and plugin configs
-require('plugins')
+-- Functional modules
+require('ui')          -- first: colorscheme loads immediately to avoid flash
+require('editing')
+require('completion')  -- before lsp: lsp reads mini.completion capabilities
+require('navigation')
+require('git')
+require('testing')
+require('lang')
 
 -- Load LSP configurations
 require('lsp')
-
-require('greek')

@@ -1,3 +1,13 @@
+-- Colorscheme
+add({ source = 'sainnhe/gruvbox-material' })
+
+now(function()
+    vim.g.gruvbox_material_better_performance = 1
+end)
+
+vim.cmd('colorscheme gruvbox-material')
+
+-- Statusline
 now(function()
     local statusline = require('mini.statusline')
 
@@ -6,10 +16,10 @@ now(function()
     local info = "DiagnosticInfo"
     local hint = "DiagnosticHint"
     local diag_signs = {
-      ERROR = string.format("%%#%s#%s", error, " "),
-      WARN  = string.format("%%#%s#%s", warn, " "),
-      INFO  = string.format("%%#%s#%s", info, " "),
-      HINT  = string.format("%%#%s#%s", hint, ""),
+      ERROR = string.format("%%#%s#%s", error, " "),
+      WARN  = string.format("%%#%s#%s", warn, " "),
+      INFO  = string.format("%%#%s#%s", info, " "),
+      HINT  = string.format("%%#%s#%s", hint, ""),
     }
 
     -- Custom function to show Greek mode
@@ -55,20 +65,65 @@ now(function()
             { hl = mode_hl, strings = { greek } },
             { hl = mode_hl, strings = { mode } },
             "%<", -- Mark general truncate point
-            create_statusline_separator(mode_hl, "MiniStatuslineGit", ""),
+            create_statusline_separator(mode_hl, "MiniStatuslineGit", ""),
             { hl = "MiniStatuslineGit", strings = { git } },
-            create_statusline_separator("MiniStatuslineGit", "MiniStatuslineFilename", ""),
+            create_statusline_separator("MiniStatuslineGit", "MiniStatuslineFilename", ""),
             { hl = "MiniStatuslineFilename", strings = { filename } },
-            create_statusline_separator("MiniStatuslineFilename", "MiniStatuslineFileinfo", ""),
+            create_statusline_separator("MiniStatuslineFilename", "MiniStatuslineFileinfo", ""),
             "%=", -- End left alignment
             { hl = "MiniStatuslineFileinfo", strings = { diagnostics } },
-            create_statusline_separator("MiniStatuslineFileinfo", "MiniStatuslineModeOther", ""),
+            create_statusline_separator("MiniStatuslineFileinfo", "MiniStatuslineModeOther", ""),
             { hl = "MiniStatuslineModeOther", strings = { lsp } },
-            create_statusline_separator("MiniStatuslineModeOther", mode_hl, ""),
+            create_statusline_separator("MiniStatuslineModeOther", mode_hl, ""),
             { hl = mode_hl,                   strings = { fileinfo } },
             { hl = mode_hl,                   strings = { search } },
         }
     end
 
     statusline.setup({ content = { active = active_content } })
+end)
+
+-- Tabline
+now(function()
+    local tabline = require('mini.tabline')
+
+    local format = function(buf_id, label)
+        local suffix = vim.bo[buf_id].modified and '+ ' or ''
+        return tabline.default_format(buf_id, label) .. suffix
+    end
+    tabline.setup({
+        format = format,
+    })
+end)
+
+-- Icons
+now(function()
+    local icons = require('mini.icons')
+    icons.setup()
+    icons.tweak_lsp_kind()
+end)
+
+-- Notifications
+now(function() require('mini.notify').setup() end)
+
+-- Highlight FIXME/HACK/TODO/NOTE
+now(function()
+    require('mini.hipatterns').setup({
+        highlighters = {
+            fixme = { pattern = 'FIXME', group = 'MiniHipatternsFixme' },
+            hack  = { pattern = 'HACK', group = 'MiniHipatternsHack' },
+            todo  = { pattern = 'TODO', group = 'MiniHipatternsTodo' },
+            note  = { pattern = 'NOTE', group = 'MiniHipatternsNote' },
+        }
+    })
+end)
+
+later(function() require('mini.indentscope').setup() end)
+later(function() require('mini.cursorword').setup() end)
+
+-- Highlight color codes (e.g. #ebdbb2) in their own color
+add('catgoose/nvim-colorizer.lua')
+
+now(function()
+    require("colorizer").setup()
 end)

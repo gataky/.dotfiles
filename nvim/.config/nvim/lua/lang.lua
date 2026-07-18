@@ -1,3 +1,4 @@
+-- Markdown
 add({ source = 'MeanderingProgrammer/render-markdown.nvim' })
 
 later(function()

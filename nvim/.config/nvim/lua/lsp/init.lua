@@ -1,3 +1,44 @@
+-- Tooling: installer for lsps/formatters/linters...
+add({
+    source = 'williamboman/mason.nvim',
+})
+
+later(function()
+    require('mason').setup({
+        ui = {
+            border = 'rounded',
+            icons = {
+                package_installed = "✓",
+                package_pending = "➜",
+                package_uninstalled = "✗"
+            }
+        }
+    })
+end)
+
+-- Tooling: formatting
+add({ source = 'stevearc/conform.nvim'})
+
+later(function()
+require("conform").setup({
+  formatters_by_ft = {
+    lua = { "stylua" },
+    -- Conform will run multiple formatters sequentially
+    python = { "autoflake", "isort", "black" },
+    go = { "gofmt", "goimports" },
+    -- -- You can customize some of the format options for the filetype (:help conform.format)
+    -- rust = { "rustfmt", lsp_format = "fallback" },
+    -- -- Conform will run the first available formatter
+    -- javascript = { "prettierd", "prettier", stop_after_first = true },
+  },
+  format_on_save = {
+    -- These options will be passed to conform.format()
+    timeout_ms = 500,
+    lsp_format = "fallback",
+  },
+})
+end)
+
 -- Disable default LSP keymaps (we set custom ones in on_attach)
 vim.g.lsp_default_keymaps = false
 
