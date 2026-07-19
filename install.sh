@@ -131,9 +131,9 @@ install_powerlevel10k() {
 
 # Function to install Tmux Plugin Manager
 install_tpm() {
-    if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
+    if [[ ! -d "$HOME/.local/state/tmux-plugin-manager" ]]; then
         print_status "Installing Tmux Plugin Manager..."
-        git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+        git clone https://github.com/tmux-plugins/tpm "$HOME/.local/state/tmux-plugin-manager"
         print_success "TPM installed successfully"
     else
         print_status "TPM already installed"
