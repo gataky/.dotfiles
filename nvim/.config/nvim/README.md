@@ -40,6 +40,8 @@ everything for that function, and `init.lua` requires them directly.
     - `alexghergh/nvim-tmux-navigation` — seamless vim/tmux pane navigation (`<C-h/j/k/l>`)
 - `lua/testing.lua`: Test running.
     - `nvim-neotest/neotest` (+ `neotest-python`) — run/inspect tests (`<leader>tn/tf/to/ts`)
+- `lua/http.lua`: HTTP client.
+    - `mistweaverco/kulala.nvim` — send/inspect HTTP, GraphQL, gRPC, WebSocket requests from `.http`/`.rest` files (`<leader>r*`); only loaded once a matching buffer is opened
 - `lua/lang.lua`: Filetype/language extras.
     - `MeanderingProgrammer/render-markdown.nvim` — in-buffer markdown rendering
 - `lua/lsp/`: Language Server Protocol clients and tooling. `lua/lsp/init.lua` sets up `mason.nvim` (LSP/formatter/linter installer) and `conform.nvim` (formatting), then dynamically loads every other file in this directory — the filename (minus `.lua`) is used as the LSP server name, so adding a new server is just adding `lua/lsp/<server_name>.lua` that returns a config table.

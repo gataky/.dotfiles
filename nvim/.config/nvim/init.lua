@@ -38,6 +38,7 @@ require('completion')  -- before lsp: lsp reads mini.completion capabilities
 require('navigation')
 require('git')
 require('testing')
+require('http')
 require('lang')
 
 -- Load LSP configurations
