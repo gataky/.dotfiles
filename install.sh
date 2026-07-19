@@ -84,15 +84,13 @@ install_system_packages() {
             print_status "$package already installed"
         fi
     done
-
-    # Install additional tools
-    brew install --cask visual-studio-code
-    brew install --cask iterm2
 }
+
+export ZSH="$HOME/.local/share/oh-my-zsh"
 
 # Function to install Oh My Zsh
 install_oh_my_zsh() {
-    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
+    if [[ ! -d "$ZSH" ]]; then
         print_status "Installing Oh My Zsh..."
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
         print_success "Oh My Zsh installed successfully"
@@ -106,13 +104,13 @@ install_zsh_plugins() {
     print_status "Installing Oh My Zsh plugins..."
 
     # zsh-autosuggestions
-    if [[ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    if [[ ! -d "$ZSH/custom/plugins/zsh-autosuggestions" ]]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH/custom/plugins/zsh-autosuggestions"
     fi
 
     # zsh-syntax-highlighting
-    if [[ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]]; then
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    if [[ ! -d "$ZSH/custom/plugins/zsh-syntax-highlighting" ]]; then
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH/custom/plugins/zsh-syntax-highlighting"
     fi
 
     print_success "Zsh plugins installed successfully"
@@ -120,9 +118,9 @@ install_zsh_plugins() {
 
 # Function to install Powerlevel10k theme
 install_powerlevel10k() {
-    if [[ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]]; then
+    if [[ ! -d "$ZSH/custom/themes/powerlevel10k" ]]; then
         print_status "Installing Powerlevel10k theme..."
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$HOME/.oh-my-zsh/custom/themes/powerlevel10k"
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH/custom/themes/powerlevel10k"
         print_success "Powerlevel10k theme installed successfully"
     else
         print_status "Powerlevel10k theme already installed"
