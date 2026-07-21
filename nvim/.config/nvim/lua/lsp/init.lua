@@ -140,22 +140,10 @@ for _, file_name in ipairs(lsp_files) do
 		-- Set capabilities (always set, don't let server override)
 		final_config.capabilities = capabilities
 
-		-- Use the new vim.lsp.config API (nvim 0.12+)
+		-- Use the new vim.lsp.config API (nvim 0.12+); vim.lsp.enable already
+		-- sets up its own FileType-triggered autostart, so no manual
+		-- vim.lsp.start/autocmd is needed here.
 		vim.lsp.config[server_name] = final_config
 		vim.lsp.enable(server_name)
-
-		-- Set up filetype autostart with full config
-		if final_config.filetypes then
-			vim.api.nvim_create_autocmd("FileType", {
-				pattern = final_config.filetypes,
-				callback = function(args)
-					-- Start LSP with the full configured settings
-					local config = vim.tbl_deep_extend("force", {
-						name = server_name,
-					}, final_config)
-					vim.lsp.start(config, { bufnr = args.buf })
-				end,
-			})
-		end
 	end
 end

@@ -9,6 +9,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/.local/share/homebrew/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
+export PATH="$HOME/.local/share/npm/bin:$PATH"
 
 export LANG=en_US.UTF-8
 export EDITOR=nvim
@@ -24,6 +25,7 @@ export ASDF_DATA_DIR="$HOME/.local/share/asdf"
 export CLAUDE_CONFIG_DIR="$HOME/.local/share/claude"
 export OLLAMA_MODELS="$HOME/.local/share/ollama/models"
 export HISTFILE="$HOME/.cache/zsh/history"
+export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
 
 # How many lines of history to keep in memory (Histsize) and in the file (Savehist)
 export HISTSIZE=10000
