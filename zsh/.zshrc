@@ -52,12 +52,6 @@ alias ll="ls -l"
 alias la="ls -la"
 alias vim=nvim
 
-eval "$(zoxide init --cmd cd zsh)"
-eval "$(direnv hook zsh)"
-eval "$(fzf --zsh)"
-eval "$(brew shellenv)"
-. $(brew --prefix asdf)/libexec/asdf.sh
-
 # Tell compinit to load from and save to the new path
 autoload -Uz compinit
 compinit -d "$ZSH_COMPDUMP"
@@ -74,3 +68,8 @@ setopt APPEND_HISTORY
 setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
+
+eval "$(direnv hook zsh)"
+eval "$(fzf --zsh)"
+eval "$(brew shellenv)"
+eval "$(zoxide init --cmd cd zsh)"
