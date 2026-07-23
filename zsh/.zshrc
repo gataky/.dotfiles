@@ -5,8 +5,14 @@ export ZSH_COMPDUMP="$HOME/.cache/zcompdump-$HOST-$ZSH_VERSION"
 export ZSH="$HOME/.local/share/oh-my-zsh"
 export ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Homebrew first, so the custom PATH entries below take priority over it
-eval "$(brew shellenv)"
+# Homebrew first, so the custom PATH entries below take priority over it.
+# Full path, not `brew shellenv` — brew isn't on the default PATH, so this
+# must not depend on ~/.zprofile or install order.
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
 
 export LANG=en_US.UTF-8
 export EDITOR=nvim
@@ -19,18 +25,22 @@ export XDG_CACHE_HOME="$HOME/Library/Caches"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 export ASDF_DATA_DIR="$HOME/.local/share/asdf"
-export CLAUDE_CONFIG_DIR="$HOME/.local/share/claude"
+export CLAUDE_CONFIG_DIR="$HOME/.config/claude"
 export OLLAMA_MODELS="$HOME/.local/share/ollama/models"
 export HISTFILE="$HOME/.cache/zsh/history"
 export NPM_CONFIG_USERCONFIG="$HOME/.config/npm/npmrc"
-export CLAUDE_CONFIG_DIR="$HOME/.config/claude"
 
-export PATH="$HOME/.local/share/homebrew/bin:$PATH"
+# `go install` drops binaries here instead of asdf's per-version dir, so PATH
+# doesn't need to change on every Go upgrade (and no `go env` fork at startup)
+export GOBIN="$HOME/.local/bin"
+
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 export PATH="$HOME/.local/share/npm/bin:$PATH"
 export PATH="$ASDF_DATA_DIR/shims:$PATH"
-export PATH="$HOME/.local/share/asdf/installs/golang/1.26.5/bin:$PATH"
+
+# zsh won't write history if this directory is missing
+[[ -d "$HOME/.cache/zsh" ]] || mkdir -p "$HOME/.cache/zsh"
 
 # How many lines of history to keep in memory (Histsize) and in the file (Savehist)
 export HISTSIZE=10000
@@ -54,10 +64,6 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 alias ll="ls -l"
 alias la="ls -la"
 alias vim=nvim
-
-# Tell compinit to load from and save to the new path
-autoload -Uz compinit
-compinit -d "$ZSH_COMPDUMP"
 
 # Share history *upon exit*, not constantly
 # This is the key setting for per-session history fidelity

@@ -1,264 +1,216 @@
 #!/bin/bash
-# Dotfiles Installation Script (macOS only)
-# This script installs all dependencies needed for the dotfiles configuration
+# Dotfiles bootstrap script (macOS only).
+#
+# Safe to run repeatedly — every step is idempotent. Designed to work on a
+# completely fresh machine via:
+#
+#   curl -fsSL https://raw.githubusercontent.com/gataky/.dotfiles/main/install.sh | bash
 
-set -e  # Exit on any error
+set -euo pipefail
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+DOTFILES_DIR="$HOME/.dotfiles"
+DOTFILES_URL="https://github.com/gataky/.dotfiles.git"
 
-# Function to print colored output
-print_status() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-print_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Function to check if command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
-
-# Function to install Homebrew
-install_homebrew() {
-    if ! command_exists brew; then
-        print_status "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-        # Add Homebrew to PATH for Apple Silicon Macs
-        if [[ $(uname -m) == "arm64" ]]; then
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-        print_success "Homebrew installed successfully"
-    else
-        print_status "Homebrew already installed"
-    fi
-}
-
-# Function to install system packages
-install_system_packages() {
-    print_status "Installing system packages..."
-
-    brew_packages=(
-        "asdf"
-        "bat"
-        "direnv"
-        "fd"
-        "fzf"
-        "git"
-        "htop"
-        "httpie"
-        "jq"
-        "just"
-        "neovim"
-        "ripgrep"
-        "stow"
-        "tldr"
-        "tmux"
-        "tree"
-        "yq"
-        "zoxide"
-        "zsh"
-    )
-
-    for package in "${brew_packages[@]}"; do
-        if ! brew list "$package" >/dev/null 2>&1; then
-            print_status "Installing $package..."
-            brew install "$package"
-        else
-            print_status "$package already installed"
-        fi
-    done
-}
-
+# These must match the values exported in zsh/.zshrc — if they drift, tools
+# get installed somewhere the shell never looks (the classic "asdf plugins
+# vanished after restart" failure).
+export ASDF_DATA_DIR="$HOME/.local/share/asdf"
 export ZSH="$HOME/.local/share/oh-my-zsh"
 
-# Function to install Oh My Zsh
+BLUE='\033[0;34m' GREEN='\033[0;32m' YELLOW='\033[1;33m' NC='\033[0m'
+info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
+success() { echo -e "${GREEN}[OK]${NC} $1"; }
+warn()    { echo -e "${YELLOW}[WARN]${NC} $1"; }
+
+# Clone a repo only if the destination doesn't exist yet.
+clone_if_missing() {
+    local url=$1 dest=$2
+    if [[ -d "$dest" ]]; then
+        info "$(basename "$dest") already present"
+    else
+        info "Cloning $(basename "$dest")..."
+        git clone --depth=1 "$url" "$dest"
+    fi
+}
+
+# --- Homebrew --------------------------------------------------------------
+# Put brew on THIS script's PATH regardless of how the machine got it.
+# .zshrc does the same dance, so nothing here depends on ~/.zprofile.
+ensure_homebrew() {
+    if ! command -v brew >/dev/null 2>&1; then
+        if [[ -x /opt/homebrew/bin/brew ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        elif [[ -x /usr/local/bin/brew ]]; then
+            eval "$(/usr/local/bin/brew shellenv)"
+        else
+            info "Installing Homebrew..."
+            # NONINTERACTIVE: no "press enter to continue" prompt, which would
+            # otherwise swallow script text when run via `curl | bash`.
+            NONINTERACTIVE=1 /bin/bash -c \
+                "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            eval "$([[ -x /opt/homebrew/bin/brew ]] \
+                && /opt/homebrew/bin/brew shellenv \
+                || /usr/local/bin/brew shellenv)"
+        fi
+    fi
+    success "Homebrew ready: $(command -v brew)"
+}
+
+# --- Dotfiles repo ----------------------------------------------------------
+# HTTPS, not SSH — a fresh machine has no SSH keys yet. Switch the remote
+# back to SSH later if you prefer pushing over SSH.
+ensure_repo() {
+    if [[ ! -d "$DOTFILES_DIR" ]]; then
+        info "Cloning dotfiles repository..."
+        git clone "$DOTFILES_URL" "$DOTFILES_DIR"
+    else
+        info "Dotfiles repository already present at $DOTFILES_DIR"
+    fi
+}
+
+install_packages() {
+    info "Installing brew packages from Brewfile..."
+    brew bundle --file="$DOTFILES_DIR/Brewfile"
+    success "Brew packages installed"
+}
+
+# --- Zsh ecosystem ----------------------------------------------------------
 install_oh_my_zsh() {
     if [[ ! -d "$ZSH" ]]; then
-        print_status "Installing Oh My Zsh..."
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-        print_success "Oh My Zsh installed successfully"
+        info "Installing Oh My Zsh..."
+        # KEEP_ZSHRC: don't let the installer write its own ~/.zshrc — ours
+        # comes from stow. CHSH/RUNZSH: no prompts, no shell swap mid-script.
+        RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c \
+            "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
     else
-        print_status "Oh My Zsh already installed"
+        info "Oh My Zsh already installed"
     fi
+
+    clone_if_missing https://github.com/zsh-users/zsh-autosuggestions \
+        "$ZSH/custom/plugins/zsh-autosuggestions"
+    clone_if_missing https://github.com/zsh-users/zsh-syntax-highlighting \
+        "$ZSH/custom/plugins/zsh-syntax-highlighting"
+    clone_if_missing https://github.com/romkatv/powerlevel10k \
+        "$ZSH/custom/themes/powerlevel10k"
+    success "Oh My Zsh + plugins + theme ready"
 }
 
-# Function to install Oh My Zsh plugins
-install_zsh_plugins() {
-    print_status "Installing Oh My Zsh plugins..."
+# --- Stow -------------------------------------------------------------------
+stow_dotfiles() {
+    info "Stowing dotfiles..."
+    cd "$DOTFILES_DIR"
 
-    # zsh-autosuggestions
-    if [[ ! -d "$ZSH/custom/plugins/zsh-autosuggestions" ]]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH/custom/plugins/zsh-autosuggestions"
-    fi
-
-    # zsh-syntax-highlighting
-    if [[ ! -d "$ZSH/custom/plugins/zsh-syntax-highlighting" ]]; then
-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH/custom/plugins/zsh-syntax-highlighting"
-    fi
-
-    print_success "Zsh plugins installed successfully"
-}
-
-# Function to install Powerlevel10k theme
-install_powerlevel10k() {
-    if [[ ! -d "$ZSH/custom/themes/powerlevel10k" ]]; then
-        print_status "Installing Powerlevel10k theme..."
-        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH/custom/themes/powerlevel10k"
-        print_success "Powerlevel10k theme installed successfully"
-    else
-        print_status "Powerlevel10k theme already installed"
-    fi
-}
-
-# Function to install Tmux Plugin Manager
-install_tpm() {
-    if [[ ! -d "$HOME/.local/state/tmux-plugin-manager" ]]; then
-        print_status "Installing Tmux Plugin Manager..."
-        git clone https://github.com/tmux-plugins/tpm "$HOME/.local/state/tmux-plugin-manager"
-        print_success "TPM installed successfully"
-    else
-        print_status "TPM already installed"
-    fi
-}
-
-# Function to install Neovim dependencies
-install_neovim_deps() {
-    print_status "Installing Neovim dependencies..."
-
-    # Create necessary directories
-    mkdir -p "$HOME/.local/share/nvim/site/pack/deps/start"
-    mkdir -p "$HOME/.config/nvim"
-
-    # Install language servers and formatters via Mason (will be done when Neovim first runs)
-    print_status "Neovim dependencies will be installed on first run via Mason"
-}
-
-# Function to install ASDF plugins
-install_asdf_plugins() {
-    if command_exists asdf; then
-        print_status "Installing ASDF plugins..."
-
-        # Add plugins
-        asdf plugin add golang || true
-        asdf plugin add python || true
-        asdf plugin add nodejs || true
-        asdf plugin add ruby   || true
-        asdf plugin add uv     || true
-        asdf plugin add dasel https://github.com/asdf-community/asdf-dasel.git || true
-
-        print_success "ASDF plugins installed successfully"
-    else
-        print_warning "ASDF not found, skipping plugin installation"
-    fi
-}
-
-# Function to set up dotfiles via GNU Stow
-setup_dotfiles() {
-    print_status "Setting up dotfiles..."
-
-    if [[ ! -d "$HOME/.dotfiles" ]]; then
-        print_status "Cloning dotfiles repository..."
-        git clone git@github.com:gataky/.dotfiles.git "$HOME/.dotfiles"
-    else
-        print_status "Dotfiles repository already present at $HOME/.dotfiles"
-    fi
-
-    cd "$HOME/.dotfiles"
-
-    local packages=(nvim zsh tmux)
-    local backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d%H%M%S)"
-    local backed_up=false
+    # Every top-level directory is a stow package — no list to keep in sync.
+    local packages=()
+    for dir in */; do
+        packages+=("${dir%/}")
+    done
 
     # Stow refuses to link over existing real files. Any pre-existing,
     # non-symlink file that collides with a package's contents gets moved
     # aside first so the run doesn't abort partway through.
+    #
+    # The -ef guard matters: stow "folds" directories into a single symlink,
+    # so $target can be the repo file itself reached through a symlinked
+    # parent dir (-L on the leaf says no). Moving that would rip the file
+    # out of this repo.
+    local backup_dir="$HOME/.dotfiles-backup-$(date +%Y%m%d%H%M%S)"
+    local backed_up=false
     for pkg in "${packages[@]}"; do
         while IFS= read -r -d '' file; do
             local rel="${file#"$pkg"/}"
             local target="$HOME/$rel"
-            if [[ -e "$target" && ! -L "$target" ]]; then
-                print_warning "Existing $target found, backing up"
+            if [[ -e "$target" && ! -L "$target" && ! "$target" -ef "$file" ]]; then
+                warn "Existing $target found, backing up"
                 mkdir -p "$backup_dir/$(dirname "$rel")"
                 mv "$target" "$backup_dir/$rel"
                 backed_up=true
             fi
         done < <(find "$pkg" -type f -print0)
     done
-
     if [[ "$backed_up" == true ]]; then
-        print_warning "Pre-existing dotfiles backed up to $backup_dir"
+        warn "Pre-existing dotfiles backed up to $backup_dir"
     fi
 
-    stow "${packages[@]}"
-    print_success "Dotfiles stowed successfully"
+    stow --restow "${packages[@]}"
+    success "Stowed: ${packages[*]}"
 }
 
-# Function to finalize installation
-finalize_installation() {
-    print_status "Finalizing installation..."
+# --- asdf -------------------------------------------------------------------
+# Runs after stow so ~/.tool-versions (if tracked) is in place.
+install_asdf() {
+    info "Installing asdf plugins..."
+    local plugins=(golang python nodejs ruby uv)
+    for plugin in "${plugins[@]}"; do
+        asdf plugin add "$plugin" 2>/dev/null || true
+    done
+    asdf plugin add dasel https://github.com/asdf-community/asdf-dasel.git 2>/dev/null || true
 
-    # Make zsh the default shell
-    if [[ "$SHELL" != "/bin/zsh" ]] && [[ "$SHELL" != "/usr/bin/zsh" ]]; then
-        print_status "Setting zsh as default shell..."
-        chsh -s "$(which zsh)"
-        print_warning "Please restart your terminal or run 'exec zsh' to use zsh"
+    if [[ -f "$HOME/.tool-versions" ]]; then
+        info "Installing tool versions from ~/.tool-versions (this can take a while)..."
+        (cd "$HOME" && asdf install)
+    else
+        warn "No ~/.tool-versions found — run 'asdf install <tool> <version>' as needed"
     fi
+    success "asdf ready (data dir: $ASDF_DATA_DIR)"
+}
 
-    # Install tmux plugins
-    if command_exists tmux; then
-        print_status "Installing tmux plugins..."
-        tmux new-session -d
-        tmux send-keys -t 0 "source ~/.tmux.conf" Enter
-        tmux send-keys -t 0 "prefix + I" Enter
-        tmux kill-session
+# --- Treesitter parsers -------------------------------------------------------
+# Skipped when parsers are already present — the script rebuilds everything
+# from scratch (clones six grammar repos), so it's only worth running on a
+# fresh machine. Rerun it manually to update pinned parsers.
+install_treesitter_parsers() {
+    local parser_dir="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/parser"
+    if [[ -d "$parser_dir" && -n "$(ls -A "$parser_dir" 2>/dev/null)" ]]; then
+        info "Treesitter parsers already present — rerun nvim/.config/nvim/install-parsers.sh to update"
+    else
+        info "Installing treesitter parsers (this can take a while)..."
+        "$DOTFILES_DIR/nvim/.config/nvim/install-parsers.sh"
     fi
+}
 
-    print_success "Installation completed successfully!"
+# --- tmux -------------------------------------------------------------------
+install_tmux_plugins() {
+    local tpm="$HOME/.local/state/tmux-plugin-manager"
+    clone_if_missing https://github.com/tmux-plugins/tpm "$tpm"
+    info "Installing tmux plugins..."
+    "$tpm/bin/install_plugins" || warn "tmux plugin install failed — run '$tpm/bin/install_plugins' manually"
+}
+
+# --- Finish -----------------------------------------------------------------
+finalize() {
+    # Runtime dirs .zshrc expects (history lives here).
+    mkdir -p "$HOME/.cache/zsh" "$HOME/.local/bin"
+
     echo
+    success "Installation complete!"
+    echo
+    if [[ "$SHELL" != */zsh ]]; then
+        # Never run chsh inside the script: it prompts for a password on
+        # stdin, and under `curl | bash` stdin is the script itself.
+        warn "Your login shell is $SHELL — run 'chsh -s /bin/zsh' to switch"
+    fi
     echo "Next steps:"
-    echo "1. Restart your terminal or run 'exec zsh'"
-    echo "2. Run 'p10k configure' to set up your Powerlevel10k theme"
-    echo "3. Open Neovim to install LSP servers and other dependencies"
-    echo "4. Customize your configuration as needed"
-    echo
-    echo "Your dotfiles are now ready to use!"
+    echo "1. Restart your terminal (or run 'exec zsh')"
+    echo "2. Set up local overrides (see README: zsh/.zshrc.local.example, nvim local.lua.example)"
+    echo "3. Open Neovim once to let Mason install LSP servers"
 }
 
-# Main installation function
 main() {
     echo "=========================================="
     echo "    Dotfiles Installation Script"
     echo "=========================================="
     echo
 
-    install_homebrew
-    install_system_packages
+    ensure_homebrew
+    ensure_repo
+    install_packages
     install_oh_my_zsh
-    install_zsh_plugins
-    install_powerlevel10k
-    install_tpm
-    install_neovim_deps
-    install_asdf_plugins
-    setup_dotfiles
-    finalize_installation
+    stow_dotfiles
+    install_asdf
+    install_treesitter_parsers
+    install_tmux_plugins
+    finalize
 }
 
-# Run main function
 main "$@"

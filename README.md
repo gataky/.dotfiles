@@ -1,14 +1,15 @@
 # Dotfiles
 
-Managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level
+Managed with [GNU Stow](https://www.gnu.org/software/stow/). Every top-level
 directory is a stow package mirroring its layout under `$HOME`.
 
 ## New machine setup
 
 `install.sh` bootstraps a fresh macOS machine end to end: installs Homebrew,
-brew packages, Oh My Zsh + plugins, Powerlevel10k, TPM, asdf plugins, clones
-this repo to `~/.dotfiles` if it isn't there yet, and stows all three
-packages. Run it directly, no manual clone needed first:
+brew packages (from the `Brewfile`), Oh My Zsh + plugins, Powerlevel10k, TPM,
+asdf plugins, clones this repo to `~/.dotfiles` (over HTTPS — no SSH keys
+needed yet), and stows every package. Run it directly, no manual clone needed
+first:
 
 ```
 curl -fsSL https://raw.githubusercontent.com/gataky/.dotfiles/main/install.sh | bash
@@ -21,22 +22,38 @@ cd ~/.dotfiles
 ./install.sh
 ```
 
-Afterward, set up your [local overrides](#local-overrides) — the script
-doesn't create these for you, since they're personal/employer-specific.
+The script is idempotent — rerun it any time to pick up new Brewfile entries
+or stow new packages. Afterward, set up your [local
+overrides](#local-overrides) and switch the repo remote back to SSH once your
+keys are in place:
+
+```
+git -C ~/.dotfiles remote set-url origin git@github.com:gataky/.dotfiles.git
+```
 
 ## Packages
 
+- `asdf` -> `~/.tool-versions`
+- `git`  -> `~/.config/git/config`
 - `nvim` -> `~/.config/nvim`
+- `p10k` -> `~/.config/p10k.zsh`
+- `tmux` -> `~/.config/tmux/tmux.conf`
 - `zsh`  -> `~/.zshrc`
-- `tmux` -> `~/.tmux.conf`
+
+## Adding software
+
+Add brew packages to the `Brewfile` and rerun `brew bundle` (or
+`./install.sh`). Language runtimes go through asdf (`asdf install golang
+latest`). Go binaries installed with `go install` land in `~/.local/bin`
+(via `GOBIN`), which is already on PATH.
 
 ## Usage
 
 ```bash
 cd ~/.dotfiles
-stow nvim zsh tmux   # symlink everything
-stow -D nvim         # unlink one package
-stow -R nvim         # restow (after adding/removing files)
+stow */             # symlink everything
+stow -D nvim        # unlink one package
+stow -R nvim        # restow (after adding/removing files)
 ```
 
 ## Local overrides
