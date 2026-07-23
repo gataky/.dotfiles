@@ -30,7 +30,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 export PATH="$HOME/.local/share/npm/bin:$PATH"
 export PATH="$ASDF_DATA_DIR/shims:$PATH"
-export PATH="$(go env GOBIN):$PATH"
+export PATH="$HOME/.local/share/asdf/installs/golang/1.26.5/bin:$PATH"
 
 # How many lines of history to keep in memory (Histsize) and in the file (Savehist)
 export HISTSIZE=10000
