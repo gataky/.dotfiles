@@ -56,9 +56,38 @@ ensure_homebrew() {
     success "Homebrew ready: $(command -v brew)"
 }
 
+# --- SSH ---------------------------------------------------------------
+# Not needed for ensure_repo below (that clones over HTTPS, which needs no
+# credentials for a public repo) — this is just so a key exists for pushing
+# or connecting to other hosts once the install is done.
+ensure_ssh_key() {
+    local key="$HOME/.ssh/id_ed25519"
+    if [[ -f "$key" ]]; then
+        info "SSH key already present at $key"
+    else
+        info "Generating SSH key..."
+        mkdir -p "$HOME/.ssh"
+        chmod 700 "$HOME/.ssh"
+        # -N "": no passphrase — this runs non-interactively via `curl | bash`,
+        # so there's no prompt available to collect one.
+        ssh-keygen -t ed25519 -C "$(whoami)@$(hostname -s)" -f "$key" -N ""
+        success "SSH key generated at $key"
+    fi
+
+    eval "$(ssh-agent -s)" >/dev/null
+    ssh-add --apple-use-keychain "$key" >/dev/null 2>&1 || ssh-add "$key" >/dev/null 2>&1 || true
+
+    echo
+    warn "Add this public key to GitHub: https://github.com/settings/ssh/new"
+    echo
+    cat "$key.pub"
+    echo
+}
+
 # --- Dotfiles repo ----------------------------------------------------------
-# HTTPS, not SSH — a fresh machine has no SSH keys yet. Switch the remote
-# back to SSH later if you prefer pushing over SSH.
+# HTTPS, not SSH — a fresh machine has no SSH keys registered with GitHub
+# yet, so the clone can't rely on the key ensure_ssh_key just generated.
+# Switch the remote to SSH later, once that key is added to your account.
 ensure_repo() {
     if [[ ! -d "$DOTFILES_DIR" ]]; then
         info "Cloning dotfiles repository..."
@@ -192,8 +221,9 @@ finalize() {
     fi
     echo "Next steps:"
     echo "1. Restart your terminal (or run 'exec zsh')"
-    echo "2. Set up local overrides (see README: zsh/.zshrc.local.example, nvim local.lua.example)"
-    echo "3. Open Neovim once to let Mason install LSP servers"
+    echo "2. Add your SSH key to GitHub if you haven't: https://github.com/settings/ssh/new"
+    echo "3. Set up local overrides (see README: zsh/.zshrc.local.example, nvim local.lua.example)"
+    echo "4. Open Neovim once to let Mason install LSP servers"
 }
 
 main() {
@@ -203,6 +233,7 @@ main() {
     echo
 
     ensure_homebrew
+    ensure_ssh_key
     ensure_repo
     install_packages
     install_oh_my_zsh
