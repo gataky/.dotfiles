@@ -1,6 +1,8 @@
 brew "asdf"
 brew "bat"
 brew "direnv"
+brew "eza"
+brew "fd"
 brew "fzf"
 brew "git"
 brew "htop"

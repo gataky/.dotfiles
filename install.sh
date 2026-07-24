@@ -206,6 +206,17 @@ install_tmux_plugins() {
     "$tpm/bin/install_plugins" || warn "tmux plugin install failed — run '$tpm/bin/install_plugins' manually"
 }
 
+# --- eza --------------------------------------------------------------------
+# For a list of themes see https://github.com/eza-community/eza-themes
+install_eza_themes() {
+    local themes=".local/share/eza-themes"
+    local theme="grvbgox-dark"
+    clone_if_missing https://github.com/eza-community/eza-themes.git "$HOME/$themes"
+    mkdir -p ~/.config/eza
+    info "eza theme set to $theme"
+    ln -sf "$HOME/$themes/themes/grvbgox-dark.yml" ~/.config/eza/theme.yml
+}
+
 # --- Finish -----------------------------------------------------------------
 finalize() {
     # Runtime dirs .zshrc expects (history lives here).
@@ -241,6 +252,7 @@ main() {
     install_asdf
     install_treesitter_parsers
     install_tmux_plugins
+    install_eza_themes
     finalize
 }
 
