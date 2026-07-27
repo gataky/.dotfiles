@@ -22,6 +22,18 @@ info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
 success() { echo -e "${GREEN}[OK]${NC} $1"; }
 warn()    { echo -e "${YELLOW}[WARN]${NC} $1"; }
 
+safe_mkdir() {
+    local dir="$1"
+    local mode="${2:-755}"
+    if [[ ! -d "$dir" ]]; then
+        mkdir -p "$dir"
+        chmod "$mode" "$dir"
+        success "Created directory: $dir with permissions $mode"
+    else
+        info "Directory already exists: $dir"
+    fi
+}
+
 # Clone a repo only if the destination doesn't exist yet.
 clone_if_missing() {
     local url=$1 dest=$2
@@ -66,8 +78,7 @@ ensure_ssh_key() {
         info "SSH key already present at $key"
     else
         info "Generating SSH key..."
-        mkdir -p "$HOME/.ssh"
-        chmod 700 "$HOME/.ssh"
+        safe_mkdir "$HOME/.ssh" 700
         # -N "": no passphrase — this runs non-interactively via `curl | bash`,
         # so there's no prompt available to collect one.
         ssh-keygen -t ed25519 -C "$(whoami)@$(hostname -s)" -f "$key" -N ""
@@ -151,7 +162,7 @@ stow_dotfiles() {
             local target="$HOME/$rel"
             if [[ -e "$target" && ! -L "$target" && ! "$target" -ef "$file" ]]; then
                 warn "Existing $target found, backing up"
-                mkdir -p "$backup_dir/$(dirname "$rel")"
+                safe_mkdir "$backup_dir/$(dirname "$rel")"
                 mv "$target" "$backup_dir/$rel"
                 backed_up=true
             fi
@@ -212,7 +223,7 @@ install_eza_themes() {
     local themes=".local/share/eza-themes"
     local theme="grvbgox-dark"
     clone_if_missing https://github.com/eza-community/eza-themes.git "$HOME/$themes"
-    mkdir -p ~/.config/eza
+    safe_mkdir "$HOME/.config/eza"
     info "eza theme set to $theme"
     ln -sf "$HOME/$themes/themes/grvbgox-dark.yml" ~/.config/eza/theme.yml
 }
@@ -220,7 +231,8 @@ install_eza_themes() {
 # --- Finish -----------------------------------------------------------------
 finalize() {
     # Runtime dirs .zshrc expects (history lives here).
-    mkdir -p "$HOME/.cache/zsh" "$HOME/.local/bin"
+    safe_mkdir "$HOME/.cache/zsh"
+    safe_mkdir "$HOME/.local/bin"
 
     echo
     success "Installation complete!"
