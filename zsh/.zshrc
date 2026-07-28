@@ -63,7 +63,7 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 alias vim=nvim
 alias ls="eza" # ls
-alias la='eza -lbF --git' # list, size, type, git
+alias la='eza -albF --git' # list, size, type, git
 alias lg='eza -lbGd --git --sort=modified' # long list, modified date sort
 
 # Share history *upon exit*, not constantly
