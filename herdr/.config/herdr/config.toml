@@ -8,8 +8,7 @@ onboarding = false
 
 [theme]
 # Built-in themes: catppuccin, terminal, tokyo-night, dracula, nord,
-#                  gruvbox, one-dark, solarized, kanagawa, rose-pine,
-#                  vesper
+#                  gruvbox, one-dark, solarized, kanagawa, rose-pine, vesper
 name = "gruvbox"
 
 # Follow host terminal light/dark appearance and switch Herdr UI themes.
