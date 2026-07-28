@@ -217,11 +217,6 @@ install_tmux_plugins() {
     "$tpm/bin/install_plugins" || warn "tmux plugin install failed — run '$tpm/bin/install_plugins' manually"
 }
 
-# --- herdr ------------------------------------------------------------------
-install_herdr_plugins() {
-    herdr plugin install paulbkim-dev/vim-herdr-navigation --yes
-}
-
 # --- eza --------------------------------------------------------------------
 # For a list of themes see https://github.com/eza-community/eza-themes
 install_eza_themes() {
@@ -269,7 +264,6 @@ main() {
     install_asdf
     install_treesitter_parsers
     install_tmux_plugins
-    install_herdr_plugins
     install_eza_themes
     finalize
 }
