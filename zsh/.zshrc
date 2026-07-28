@@ -63,8 +63,9 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 alias vim=nvim
 alias ls="eza" # ls
-alias la='eza -albF --git' # list, size, type, git
+alias la='eza -lbF --all --git' # list, size, type, git
 alias lg='eza -lbGd --git --sort=modified' # long list, modified date sort
+alias lt='eza --long --git --tree --level=3'
 
 # Share history *upon exit*, not constantly
 # This is the key setting for per-session history fidelity
