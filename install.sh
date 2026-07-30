@@ -128,6 +128,8 @@ install_oh_my_zsh() {
 
     clone_if_missing https://github.com/zsh-users/zsh-autosuggestions \
         "$ZSH/custom/plugins/zsh-autosuggestions"
+    clone_if_missing https://github.com/Aloxaf/fzf-tab \
+        "$ZSH/custom/plugins/fzf-tab"
     clone_if_missing https://github.com/zsh-users/zsh-syntax-highlighting \
         "$ZSH/custom/plugins/zsh-syntax-highlighting"
     clone_if_missing https://github.com/romkatv/powerlevel10k \

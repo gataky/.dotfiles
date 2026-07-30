@@ -55,9 +55,26 @@ export SAVEHIST=10000
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+# fzf-tab must load before plugins that wrap ZLE widgets (autosuggestions, syntax-highlighting)
+plugins=(git fzf-tab zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
+
+# --- fzf-tab config (must come after oh-my-zsh.sh, which sets `menu select`) ---
+# omz sets this under a more specific pattern than ':completion:*', so delete it
+# outright; otherwise it wins zstyle precedence and fzf-tab can't capture the
+# unambiguous prefix.
+zstyle -d ':completion:*:*:*:*:*' menu
+zstyle ':completion:*' menu no
+# group support in the fzf list
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:*' switch-group '<' '>'
+# include dotfiles in completion lists, WITHOUT making `*` match them in normal
+# globbing (which `setopt globdots` would do -- e.g. `rm *` hitting dotfiles)
+_comp_options+=(globdots)
+# directory preview when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
