@@ -24,6 +24,15 @@ later(function()
         callback = function() require('telescope.builtin').git_files() end,
         noremap = true,
     })
+    -- Re-open the current quickfix/location list after dismissing the picker.
+    vim.api.nvim_set_keymap('n', '<leader>sq', '', {
+        callback = function() require('telescope.builtin').quickfix() end,
+        noremap = true,
+    })
+    vim.api.nvim_set_keymap('n', '<leader>sl', '', {
+        callback = function() require('telescope.builtin').loclist() end,
+        noremap = true,
+    })
 end)
 
 -- file tree

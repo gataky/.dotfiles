@@ -58,6 +58,43 @@ vim.api.nvim_create_autocmd("User", {
     end,
 })
 
+-- Never show the quickfix/location window: whatever opens one (`:copen`, `:grep`,
+-- `:make`, LSP handlers, plugins) gets bounced into the matching Telescope picker.
+-- Set `vim.g.qf_no_telescope = true` (or use `:QfNative`) to opt out temporarily.
+vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("QuickfixToTelescope", { clear = true }),
+    pattern = "qf",
+    callback = function()
+        if vim.g.qf_no_telescope then
+            return
+        end
+
+        local win = vim.api.nvim_get_current_win()
+        local info = vim.fn.getwininfo(win)[1]
+        local is_loclist = info ~= nil and info.loclist == 1
+
+        -- Defer: the window is still being set up while FileType fires.
+        vim.schedule(function()
+            if vim.api.nvim_win_is_valid(win) then
+                vim.api.nvim_win_close(win, true)
+            end
+            local builtin = require('telescope.builtin')
+            if is_loclist then
+                builtin.loclist()
+            else
+                builtin.quickfix()
+            end
+        end)
+    end,
+})
+
+-- Escape hatch: `:QfNative copen` runs a command with the interception disabled.
+vim.api.nvim_create_user_command("QfNative", function(opts)
+    vim.g.qf_no_telescope = true
+    pcall(vim.cmd, opts.args ~= "" and opts.args or "copen")
+    vim.schedule(function() vim.g.qf_no_telescope = nil end)
+end, { nargs = "*", complete = "command", desc = "Run a command with the real quickfix window" })
+
 -- Automatic Centering with Autocommands, when navigating makes sure the spot you're navigating
 -- to is centered in the buffer.
 vim.api.nvim_create_autocmd("BufReadPost", {
