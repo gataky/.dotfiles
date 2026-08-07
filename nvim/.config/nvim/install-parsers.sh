@@ -11,8 +11,11 @@
 # by default), like any other generated/downloaded artifact.
 #
 # Grammar revisions are pinned to match the query commit: for
-# bash/go/javascript/python/typescript, both come from nvim-treesitter's
-# lockfile.json + runtime/queries at the same commit (nvim-treesitter keeps
+# bash/gdscript/go/javascript/python/typescript, both come from nvim-treesitter's
+# lua/nvim-treesitter/parsers.lua + runtime/queries at the same commit (that's
+# the layout on nvim-treesitter's rewritten `main` branch, which the pinned
+# commit below is on -- the old `master` lockfile.json doesn't exist there;
+# nvim-treesitter keeps
 # those two in sync, so pulling them together guarantees the query files
 # don't reference node types the pinned grammar doesn't have). javascript
 # and typescript queries also `; inherits:` from ecma/jsx, which aren't
@@ -43,6 +46,7 @@ TMUX_QUERIES="https://raw.githubusercontent.com/Freed-Wu/tree-sitter-tmux/0.1.0/
 # name url revision [subdir-within-repo]
 PARSERS=(
     "bash       https://github.com/tree-sitter/tree-sitter-bash            0c46d792d54c536be5ff7eb18eb95c70fccdb232  ."
+    "gdscript   https://github.com/PrestonKnopp/tree-sitter-gdscript       9686853b696db07118ad110e440d6de0ca6498b4  ."
     "go         https://github.com/tree-sitter/tree-sitter-go              5e73f476efafe5c768eda19bbe877f188ded6144  ."
     "javascript https://github.com/tree-sitter/tree-sitter-javascript      6fbef40512dcd9f0a61ce03a4c9ae7597b36ab5c  ."
     "python     https://github.com/tree-sitter/tree-sitter-python          710796b8b877a970297106e5bbc8e2afa47f86ec  ."
@@ -55,6 +59,7 @@ PARSERS=(
 # not real parsers, so they have no PARSERS entry above)
 QUERIES=(
     "bash       $NVIM_TREESITTER_QUERIES/bash        highlights.scm injections.scm locals.scm folds.scm indents.scm"
+    "gdscript   $NVIM_TREESITTER_QUERIES/gdscript    highlights.scm injections.scm locals.scm folds.scm indents.scm"
     "go         $NVIM_TREESITTER_QUERIES/go          highlights.scm injections.scm locals.scm folds.scm indents.scm"
     "javascript $NVIM_TREESITTER_QUERIES/javascript  highlights.scm injections.scm locals.scm folds.scm indents.scm"
     "typescript $NVIM_TREESITTER_QUERIES/typescript  highlights.scm injections.scm locals.scm folds.scm indents.scm"
