@@ -73,6 +73,11 @@ for entry in "${PARSERS[@]}"; do
     read -r name url revision subdir <<<"$entry"
     echo "== $name (parser) =="
 
+    if [ -f "$PARSER_DIR/$name.so" ]; then
+        echo "skipping $name.so (already installed)"
+        continue
+    fi
+
     repo_dir="$WORK_DIR/$name"
     git clone --quiet "$url" "$repo_dir"
     git -C "$repo_dir" checkout --quiet "$revision"
@@ -91,6 +96,16 @@ for entry in "${QUERIES[@]}"; do
     echo "== $name (queries) =="
 
     lang_dir="$QUERY_DIR/$name"
+
+    all_present=true
+    for file in $files; do
+        [ -f "$lang_dir/$file" ] || { all_present=false; break; }
+    done
+    if $all_present; then
+        echo "skipping $name queries (already installed)"
+        continue
+    fi
+
     mkdir -p "$lang_dir"
     for file in $files; do
         curl -sL --fail -o "$lang_dir/$file" "$base_url/$file"

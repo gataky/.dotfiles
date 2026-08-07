@@ -7,7 +7,9 @@ vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("Treesitter", { clear = true }),
     callback = function(args)
         local ok = pcall(vim.treesitter.start, args.buf)
-        if ok then
+        -- gdscript indent queries are broken upstream (whitespace token issue);
+        -- skip indentexpr override so the built-in s:GDScriptIndent() is used.
+        if ok and args.match ~= "gdscript" then
             vim.bo[args.buf].indentexpr = "v:lua.vim.treesitter.indentexpr()"
         end
     end,
