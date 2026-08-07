@@ -110,7 +110,7 @@ ensure_repo() {
 
 install_packages() {
     info "Installing brew packages from Brewfile..."
-    brew bundle --file="$DOTFILES_DIR/Brewfile"
+    brew bundle --file="$DOTFILES_DIR/Brewfile" --no-upgrade
     success "Brew packages installed"
 }
 
