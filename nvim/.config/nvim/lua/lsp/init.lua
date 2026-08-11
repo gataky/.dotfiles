@@ -148,3 +148,8 @@ for _, file_name in ipairs(lsp_files) do
 		vim.lsp.enable(server_name)
 	end
 end
+
+-- Exported for configs registered outside the loop above (a plugin owning its
+-- own `vim.lsp.config` entry, say), so they can share the same keymaps and
+-- completion capabilities instead of reimplementing them.
+return { on_attach = on_attach, capabilities = capabilities }

@@ -43,3 +43,6 @@ require('lang')
 
 -- Load LSP configurations
 require('lsp')
+
+-- Local plugins (after 'lsp': gdev.nvim overrides the gdscript server config)
+require('gdev')
