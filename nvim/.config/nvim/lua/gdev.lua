@@ -19,6 +19,12 @@ vim.opt.rtp:prepend(path)
 
 require('gdev.treesitter').setup({})
 require('gdev.lsp').setup({})
+require('gdev.dap').setup({})
+require('gdev.format').setup({})
+require('gdev.server').setup({})
+require('gdev.run').setup({})
+require('gdev.scenetree').setup({})
+require('gdev.docs').setup({})
 
 -- `gdev.lsp` assigns `vim.lsp.config.gdscript` wholesale, which drops the
 -- completion capabilities and keymaps every other server here gets from
