@@ -115,26 +115,11 @@ install_packages() {
 }
 
 # --- Zsh ecosystem ----------------------------------------------------------
-install_oh_my_zsh() {
-    if [[ ! -d "$ZSH" ]]; then
-        info "Installing Oh My Zsh..."
-        # KEEP_ZSHRC: don't let the installer write its own ~/.zshrc — ours
-        # comes from stow. CHSH/RUNZSH: no prompts, no shell swap mid-script.
-        RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c \
-            "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    else
-        info "Oh My Zsh already installed"
-    fi
-
-    clone_if_missing https://github.com/zsh-users/zsh-autosuggestions \
-        "$ZSH/custom/plugins/zsh-autosuggestions"
+install_zsh_plugins() {
+    info "Installing zsh plugins..."
     clone_if_missing https://github.com/Aloxaf/fzf-tab \
-        "$ZSH/custom/plugins/fzf-tab"
-    clone_if_missing https://github.com/zsh-users/zsh-syntax-highlighting \
-        "$ZSH/custom/plugins/zsh-syntax-highlighting"
-    clone_if_missing https://github.com/romkatv/powerlevel10k \
-        "$ZSH/custom/themes/powerlevel10k"
-    success "Oh My Zsh + plugins + theme ready"
+        "$HOME/.local/share/fzf-tab/"
+    success "Zsh + plugins installed"
 }
 
 # --- Stow -------------------------------------------------------------------
@@ -266,7 +251,7 @@ main() {
     ensure_ssh_key
     ensure_repo
     install_packages
-    install_oh_my_zsh
+    install_zsh_plugins
     stow_dotfiles
     install_asdf
     install_treesitter_parsers
