@@ -111,6 +111,8 @@ ensure_repo() {
 install_packages() {
     info "Installing brew packages from Brewfile..."
     brew bundle --file="$DOTFILES_DIR/Brewfile" --no-upgrade
+
+    starship preset gruvbox-rainbow -o ~/.config/starship.toml
     success "Brew packages installed"
 }
 
@@ -134,7 +136,7 @@ stow_dotfiles() {
     done
 
     # Stow refuses to link over existing real files. Any pre-existing,
-    # non-symlink file that collides with a package's contents gets moved
+    # non-symlink file tjhat collides with a package's contents gets moved
     # aside first so the run doesn't abort partway through.
     #
     # The -ef guard matters: stow "folds" directories into a single symlink,
