@@ -1,0 +1,21 @@
+# `use asdf` (direnv's stdlib) expects to source an asdf.sh that no longer
+# ships with asdf >=0.16, the Go rewrite — hence "use_asdf: command not
+# found". This reimplements it against the current asdf: read .tool-versions
+# in the current directory and PATH_add each pinned tool's own bin dir
+# directly, bypassing asdf's shims entirely.
+use_asdf() {
+  local asdf_data_dir="${ASDF_DATA_DIR:-$HOME/.local/share/asdf}"
+  local tool_versions=".tool-versions"
+  [ -f "$tool_versions" ] || return 0
+
+  local plugin version
+  while read -r plugin version _; do
+    case "$plugin" in "" | \#*) continue ;; esac
+    local bin_dir="$asdf_data_dir/installs/$plugin/$version/bin"
+    if [ -d "$bin_dir" ]; then
+      PATH_add "$bin_dir"
+    else
+      log_error "asdf: $plugin $version is not installed (expected $bin_dir)"
+    fi
+  done <"$tool_versions"
+}

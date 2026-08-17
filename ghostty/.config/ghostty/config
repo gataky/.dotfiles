@@ -1,2 +1,4 @@
 font-family = UbuntuMono Nerd Font Mono
-font-size = 14
+# font-family = Agave Nerd Font
+font-family = Symbols Nerd Font Mono
+font-size = 16
