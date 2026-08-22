@@ -116,6 +116,11 @@ now(function()
             note  = { pattern = 'NOTE', group = 'MiniHipatternsNote' },
         }
     })
+
+    vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'markdown' },
+        callback = function() vim.b.minihipatterns_disable = true end,
+    })
 end)
 
 later(function() require('mini.indentscope').setup() end)
