@@ -13,9 +13,10 @@
 -- and `lua/lsp/gdscript.lua` still provides a basic gdscript client without it.
 local path = vim.fn.expand(vim.g.gdev_path or '~/Documents/gdev.nvim')
 
-if vim.uv.fs_stat(path .. '/lua/gdev') == nil then
+if vim.uv.fs_stat(path .. '/lua/gdev') ~= nil then
     return
 end
+
 
 vim.g.gdev_dev_reload = true
 

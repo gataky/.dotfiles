@@ -104,7 +104,22 @@ now(function()
 end)
 
 -- Notifications
-now(function() require('mini.notify').setup() end)
+now(function()
+    require('mini.notify').setup({
+        content = {
+            -- basedpyright fires a fresh $/progress cycle on every buffer edit
+            -- (it re-analyzes on each debounced didChange), which floods this
+            -- as a toast per keystroke. Other servers' progress (e.g. gopls
+            -- indexing) is longer-lived and worth keeping.
+            sort = function(notif_arr)
+                local filtered = vim.tbl_filter(function(notif)
+                    return not (notif.data.source == 'lsp_progress' and notif.data.client_name == 'basedpyright')
+                end, notif_arr)
+                return MiniNotify.default_sort(filtered)
+            end,
+        },
+    })
+end)
 
 -- Highlight FIXME/HACK/TODO/NOTE
 now(function()

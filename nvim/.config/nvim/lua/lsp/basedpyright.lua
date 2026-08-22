@@ -1,13 +1,15 @@
-local function find_venv(root_dir)
-    if not root_dir then
+-- Walk up from `start` looking for a `.venv/bin/python`. The workspace root is
+-- not always where the venv lives, so this searches the whole chain rather than
+-- checking a single directory.
+local function find_venv(start)
+    if not start or start == "" then
         return nil
     end
 
-    local venv_names = { ".venv" }
-    for _, venv_name in ipairs(venv_names) do
-        local venv_python = root_dir .. "/" .. venv_name .. "/bin/python"
-        if vim.fn.executable(venv_python) == 1 then
-            return venv_python, root_dir, venv_name
+    for dir in vim.fs.parents(start .. "/.") do
+        local python = dir .. "/.venv/bin/python"
+        if vim.fn.executable(python) == 1 then
+            return python, dir .. "/.venv"
         end
     end
     return nil
@@ -16,36 +18,56 @@ end
 return {
     cmd = { "basedpyright-langserver", "--stdio" },
     filetypes = { "python" },
-    root_dir = function(fname)
-        -- Handle both buffer number and file path
-        local path = type(fname) == "number" and vim.api.nvim_buf_get_name(fname) or fname
 
-        -- Use .git as the root marker for monorepo structure
-        local found = vim.fs.find(".git", {
-            path = path,
-            upward = true,
-        })[1]
-
-        return found and vim.fs.dirname(found) or nil
-    end,
-    on_attach = function(client, bufnr)
-        -- Find and configure venv on attach
-        local root_dir = client.config.root_dir
-        if type(root_dir) == "function" then
-            root_dir = root_dir(vim.api.nvim_buf_get_name(bufnr))
+    -- `root_dir` is a callback in the vim.lsp.config API: nvim passes
+    -- (bufnr, on_dir) and starts the client only when on_dir is called.
+    -- Returning a value instead is silently ignored and the server never starts.
+    root_dir = function(bufnr, on_dir)
+        local path = vim.api.nvim_buf_get_name(bufnr)
+        if path == "" then
+            return
         end
 
-        local venv_python, venv_path, venv_name = find_venv(root_dir)
-        if venv_python then
-            client.config.settings.python = client.config.settings.python or {}
-            client.config.settings.python.pythonPath = venv_python
-            client.config.settings.python.venvPath = venv_path
-            client.config.settings.python.venv = venv_name
+        -- Project markers come first and `.git` last: in a monorepo the git root
+        -- is several levels above the actual Python project, and rooting there
+        -- puts the project's `.venv` and `src/` out of the server's reach.
+        local root = vim.fs.root(bufnr, {
+            "pyproject.toml",
+            "pyrightconfig.json",
+            "setup.py",
+            "setup.cfg",
+            ".git",
+        })
 
-            -- Notify the server of the updated settings
-            client:notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-        end
+        on_dir(root or vim.fs.dirname(path))
     end,
+
+    -- pythonPath has to be in place before `initialize`, otherwise the server
+    -- resolves imports against whichever interpreter it was launched with and
+    -- reports every third-party dependency as missing.
+    before_init = function(_, config)
+        local python, venv = find_venv(config.root_dir)
+        if not python then
+            -- direnv/an activated shell is the fallback when there is no .venv
+            -- in the tree (a uv cache dir elsewhere, say).
+            local active = vim.env.VIRTUAL_ENV
+            if active and vim.fn.executable(active .. "/bin/python") == 1 then
+                python, venv = active .. "/bin/python", active
+            end
+        end
+        if not python then
+            return
+        end
+
+        config.settings = vim.tbl_deep_extend("force", config.settings or {}, {
+            python = {
+                pythonPath = python,
+                venvPath = vim.fs.dirname(venv),
+                venv = vim.fs.basename(venv),
+            },
+        })
+    end,
+
     settings = {
         python = {
             analysis = {
@@ -69,5 +91,4 @@ return {
             },
         },
     },
-    single_file_support = true,
 }
